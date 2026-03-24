@@ -892,11 +892,15 @@
                 ]
             }
     function loadDraft() {
-         
+          var saved = localStorage.getItem("schemeFormDraft");
 
         var data;
 
+        if (saved) {
+            data = JSON.parse(saved); // ✅ use localStorage
+        } else {
             data = formData; // ✅ fallback to your JSON
+        }
             // 🔹 BASIC
             document.getElementById("schemeName").value = data.schemeName || '';
             document.getElementById("schemeDescription").value = data.schemeDescription || '';
