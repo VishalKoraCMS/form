@@ -570,7 +570,7 @@
 
       <div class="preview-row">
         <div class="preview-label">Sector</div>
-        <div class="preview-value">${sector.options[sector.selectedIndex]?.text || '-'}</div>
+        <div class="preview-value">${sector.selectedIndex >= 0 ? sector.options[sector.selectedIndex].text : '-'}</div>
       </div>
           <div class="preview-row">
       <div class="preview-label">Sub Sector</div>
@@ -637,12 +637,232 @@
 
         }
 
-        function saveDraft() {
-            alert("Draft Saved (API call here)");
-        }
+      function saveDraft() {
+            var formData = {
+                schemeName: document.getElementById("schemeName").value,
+                schemeDescription: document.getElementById("schemeDescription").value,
+                state: stateChoice.getValue(true),
+                budget: document.getElementById("budget").value,
+                ministry: document.getElementById("ministry").value,
+                sector: document.getElementById("sector").value,
+                subSector: document.getElementById("subSector").value,
+                fields: []
+            };
 
-        function saveFinal() {
-            alert("Final Data Saved (API call here)");
+            var allFields = document.querySelectorAll(".field-card");
+
+            allFields.forEach(function (field) {
+                var id = field.id.split('-')[1];
+                var value = '';
+
+                // 🔹 get value
+                var input = document.getElementById("val-" + id);
+
+                if (input) {
+                    if (input.type === "file") {
+                        value = input.files && input.files.length > 0
+                            ? input.files[0].name
+                            : '';
+                    } else {
+                        value = input.value;
+                    }
+                }
+
+                // radio
+                var radio = document.querySelector("input[name='val-" + id + "']:checked");
+                if (radio) value = radio.value;
+
+                // checkbox
+                var checkboxes = document.querySelectorAll("#input-" + id + " input[type=checkbox]:checked");
+                if (checkboxes.length > 0) {
+                    value = [];
+                    checkboxes.forEach(function (c) {
+                        value.push(c.value);
+                    });
+                }
+
+                // 🔹 collect options
+                var options = [];
+                var optionInputs = document.querySelectorAll("#option-list-" + id + " input");
+                if (optionInputs.length > 0) {
+                    optionInputs.forEach(function (opt) {
+                        if (opt.value) {
+                            options.push(opt.value);
+                        }
+                    });
+                }
+
+                formData.fields.push({
+                    name: document.getElementById("name-" + id).value,
+                    type: document.getElementById("type-" + id).value,
+                    mandatory: document.getElementById("mandatory-" + id).checked,
+                    value: value,
+                    options: options, // ✅ important
+                    section: field.getAttribute("data-section")
+                });
+            });
+
+            localStorage.setItem("schemeFormDraft", JSON.stringify(formData));
+
+            console.log("Saved:", formData);
+            alert("Scheme draft saved successfully 📝");
+        }
+    function loadDraft() {
+            var saved = localStorage.getItem("schemeFormDraft");
+            if (!saved) return;
+
+            var data = JSON.parse(saved);
+
+            // 🔹 BASIC
+            document.getElementById("schemeName").value = data.schemeName || '';
+            document.getElementById("schemeDescription").value = data.schemeDescription || '';
+            document.getElementById("budget").value = data.budget || '';
+            document.getElementById("ministry").value = data.ministry || '';
+            document.getElementById("sector").value = data.sector || '';
+            document.getElementById("subSector").value = data.subSector || '';
+
+            // 🔹 STATES
+            if (data.state && stateChoice) {
+                stateChoice.setChoiceByValue(data.state);
+            }
+
+            // 🔹 DYNAMIC FIELDS
+            if (data.fields && data.fields.length > 0) {
+
+                data.fields.forEach(function (field) {
+
+                    addField(field.section);
+                    var id = fieldCounter;
+
+                    document.getElementById("name-" + id).value = field.name || '';
+                    document.getElementById("type-" + id).value = field.type || '';
+                    document.getElementById("mandatory-" + id).checked = field.mandatory || false;
+
+                    renderInput(id);
+
+                    setTimeout(function () {
+
+                        // 🔥 restore options
+                        if (field.options && field.options.length > 0) {
+                            var optionList = document.getElementById("option-list-" + id);
+
+                            if (optionList) {
+                                optionList.innerHTML = '';
+
+                                field.options.forEach(function (opt) {
+                                    optionList.innerHTML += `<input type="text" value="${opt}" oninput="updateOptions(${id})">`;
+                                });
+
+                                updateOptions(id);
+                            }
+                        }
+
+                        var input = document.getElementById("val-" + id);
+
+                        // 🔹 FILE (cannot auto-fill)
+                        if (field.type === "file") {
+                            document.getElementById("value-" + id).innerHTML +=
+                                "<small>Saved file: " + field.value + "</small>";
+                        }
+
+                        // 🔹 CHECKBOX
+                        else if (field.type === "checkbox") {
+                            if (Array.isArray(field.value)) {
+                                field.value.forEach(function (val) {
+                                    var checkbox = document.querySelector(
+                                        "#input-" + id + " input[value='" + val + "']"
+                                    );
+                                    if (checkbox) checkbox.checked = true;
+                                });
+                            }
+                        }
+
+                        // 🔹 RADIO
+                        else if (field.type === "radio") {
+                            var radio = document.querySelector(
+                                "input[name='val-" + id + "'][value='" + field.value + "']"
+                            );
+                            if (radio) radio.checked = true;
+                        }
+
+                        // 🔹 OTHER INPUTS
+                        else {
+                            if (input) input.value = field.value || '';
+                        }
+
+                    }, 100);
+                });
+            }
+        }
+       function saveFinal() {
+            var formData = {
+                schemeName: document.getElementById("schemeName").value,
+                schemeDescription: document.getElementById("schemeDescription").value,
+                state: stateChoice.getValue(true),
+                budget: document.getElementById("budget").value,
+                ministry: document.getElementById("ministry").value,
+                sector: document.getElementById("sector").value,
+                subSector: document.getElementById("subSector").value,
+                fields: []
+            };
+
+            var allFields = document.querySelectorAll(".field-card");
+
+            allFields.forEach(function (field) {
+                var id = field.id.split('-')[1];
+                var value = '';
+
+                // 🔹 get value
+                var input = document.getElementById("val-" + id);
+
+                if (input) {
+                    if (input.type === "file") {
+                        value = input.files && input.files.length > 0
+                            ? input.files[0].name
+                            : '';
+                    } else {
+                        value = input.value;
+                    }
+                }
+
+                // radio
+                var radio = document.querySelector("input[name='val-" + id + "']:checked");
+                if (radio) value = radio.value;
+
+                // checkbox
+                var checkboxes = document.querySelectorAll("#input-" + id + " input[type=checkbox]:checked");
+                if (checkboxes.length > 0) {
+                    value = [];
+                    checkboxes.forEach(function (c) {
+                        value.push(c.value);
+                    });
+                }
+
+                // 🔹 collect options
+                var options = [];
+                var optionInputs = document.querySelectorAll("#option-list-" + id + " input");
+                if (optionInputs.length > 0) {
+                    optionInputs.forEach(function (opt) {
+                        if (opt.value) {
+                            options.push(opt.value);
+                        }
+                    });
+                }
+
+                formData.fields.push({
+                    name: document.getElementById("name-" + id).value,
+                    type: document.getElementById("type-" + id).value,
+                    mandatory: document.getElementById("mandatory-" + id).checked,
+                    value: value,
+                    options: options, // ✅ important
+                    section: field.getAttribute("data-section")
+                });
+            });
+
+            localStorage.setItem("schemeFormDraft", JSON.stringify(formData));
+
+            console.log("updated:", formData);
+            alert("Scheme submitted to selected states successfully ✅");
         }
         function openPreview() {
             updatePreview(); // generate latest preview
@@ -668,6 +888,9 @@
         function clearAllStates() {
             stateChoice.removeActiveItems();
         }
+        window.onload = function () {
+                loadDraft();
+            };
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <!-- PREVIEW MODAL -->
