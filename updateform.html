@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Scheme Review</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background: #f3f4f6;
+            font-family: "Segoe UI";
+        }
+
+        .panel {
+            background: #fff;
+            padding: 22px;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            width: 70%;
+        }
+
+        .preview-card {
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            margin-bottom: 16px;
+        }
+
+        .preview-header {
+            background: #f3f4f6;
+            padding: 10px;
+            font-weight: 600;
+        }
+
+        .preview-row {
+            display: flex;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .preview-label {
+            width: 40%;
+            padding: 10px;
+            background: #f9fafb;
+        }
+
+        .preview-value {
+            width: 60%;
+            padding: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container d-flex justify-content-center mt-4">
+        <div class="panel">
+
+            <div id="livePreviewContainer"></div>
+
+            <div class="d-flex justify-content-center gap-2 mt-3">
+                <button class="btn btn-dark btn-sm" onclick="handleCancel()">Cancel</button>
+                <button class="btn btn-primary btn-sm" onclick="handleUpdate()">Update</button>
+                <button class="btn btn-success btn-sm" onclick="openPreview('Approved')">Approve</button>
+                <button class="btn btn-danger btn-sm" onclick="openPreview('Rejected')">Reject</button>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+
+        /* =========================
+           STORAGE CONFIG
+        ========================= */
+        const STORAGE_KEY = "schemeFormData";
+
+        /* =========================
+           DEFAULT DATA
+        ========================= */
+        const defaultData = {
+                "schemeName": "Industrial Growth Incentive Scheme",
+                "schemeDescription": "Provides financial and infrastructure support for industrial expansion across multiple states.",
+                "state": [
+                    "Gujarat",
+                    "Maharashtra",
+                    "Karnataka"
+                ],
+                "budget": "10000000",
+                "ministry": "Ministry of Heavy Industries",
+                "sector": "921",
+                "subSector": "S3",
+                "isHighLight": false,
+                "fields": [
+                    {
+                        "name": "Beneficiary Name",
+                        "type": "text",
+                        "mandatory": false,
+                        "value": "ABC Industries Pvt Ltd",
+                        "options": [],
+                        "section": "basicSection",
+                        "isHighLight": false
+                    },
+                    {
+                        "name": "Number of Employees",
+                        "type": "number",
+                        "mandatory": false,
+                        "value": "150",
+                        "options": [],
+                        "section": "basicSection",
+                        "isHighLight": false
+                    },
+                    {
+                        "name": "Registration Date",
+                        "type": "date",
+                        "mandatory": false,
+                        "value": "2025-12-15",
+                        "options": [],
+                        "section": "basicSection",
+                        "isHighLight": false
+                    },
+                    {
+                        "name": "Business Type",
+                        "type": "dropdown",
+                        "mandatory": false,
+                        "value": "Manufacturing",
+                        "options": [
+                            "Manufacturing",
+                            "Service",
+                            "Trading"
+                        ],
+                        "section": "basicSection",
+                        "isHighLight": false
+                    },
+                    {
+                        "name": "Is MSME Registered",
+                        "type": "radio",
+                        "mandatory": false,
+                        "value": "Yes",
+                        "options": [
+                            "Yes",
+                            "No"
+                        ],
+                        "section": "basicSection",
+                        "isHighLight": false
+                    },
+                    {
+                        "name": "Applicable Benefits",
+                        "type": "checkbox",
+                        "mandatory": false,
+                        "value": [
+                            "Subsidy",
+                            "Loan Support"
+                        ],
+                        "options": [
+                            "Tax Exemption",
+                            "Subsidy",
+                            "Loan Support"
+                        ],
+                        "section": "basicSection",
+                        "isHighLight": false
+                    },
+                    {
+                        "name": "Attached Document",
+                        "type": "file",
+                        "mandatory": false,
+                        "value": "registration-certificate.pdf",
+                        "options": [],
+                        "section": "basicSection",
+                        "isHighLight": false
+                    },
+                    {
+                        "name": "Project Name",
+                        "type": "text",
+                        "mandatory": false,
+                        "value": "Solar Plant Expansion",
+                        "options": [],
+                        "section": "FinancialDetails",
+                        "isHighLight": false
+                    },
+                    {
+                        "name": "Total Investment",
+                        "type": "number",
+                        "mandatory": false,
+                        "value": "2500000",
+                        "options": [],
+                        "section": "FinancialDetails",
+                        "isHighLight": false
+                    },
+                    {
+                        "name": "Start Date",
+                        "type": "date",
+                        "mandatory": false,
+                        "value": "2026-04-01",
+                        "options": [],
+                        "section": "FinancialDetails",
+                        "isHighLight": false
+                    },
+                    {
+                        "name": "Attached Document",
+                        "type": "file",
+                        "mandatory": false,
+                        "value": "dummy-pdf_2.pdf",
+                        "options": [],
+                        "section": "FinancialDetails",
+                        "isHighLight": false
+                    },
+                    {
+                        "name": "Performance Rating",
+                        "type": "dropdown",
+                        "mandatory": false,
+                        "value": "Excellent",
+                        "options": [
+                            "Poor",
+                            "Average",
+                            "Good",
+                            "Very Good",
+                            "Excellent"
+                        ],
+                        "section": "KPIMetrics",
+                        "isHighLight": false
+                    },
+                    {
+                        "name": "Approval Status",
+                        "type": "radio",
+                        "mandatory": false,
+                        "value": "Approved",
+                        "options": [
+                            "Pending",
+                            "Approved",
+                            "Rejected"
+                        ],
+                        "section": "KPIMetrics",
+                        "isHighLight": false
+                    },
+                    {
+                        "name": "Facilities Provided",
+                        "type": "checkbox",
+                        "mandatory": false,
+                        "value": [
+                            "Funding",
+                            "Training"
+                        ],
+                        "options": [
+                            "Funding",
+                            "Training",
+                            "Infrastructure",
+                            "Mentorship"
+                        ],
+                        "section": "Others",
+                        "isHighLight": false
+                    },
+                    {
+                        "name": "Remarks",
+                        "type": "text",
+                        "mandatory": false,
+                        "value": "Project meets all eligibility criteria and shows strong growth potential.",
+                        "options": [],
+                        "section": "Others",
+                        "isHighLight": false
+                    }
+                ]
+            };
+
+        /* =========================
+           STATE
+        ========================= */
+        let formData = loadFromStorage();
+        let tempFormData = deepClone(formData);
+
+        /* =========================
+           HELPERS
+        ========================= */
+        function deepClone(obj) {
+            return JSON.parse(JSON.stringify(obj));
+        }
+
+        function loadFromStorage() {
+            const data = localStorage.getItem(STORAGE_KEY);
+            return data ? JSON.parse(data) : deepClone(defaultData);
+        }
+
+        function saveToStorage(data) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        }
+
+        const formatHeading = t => t.replace(/([A-Z])/g, ' $1');
+
+        /* =========================
+           RENDER INPUT
+        ========================= */
+        function renderInput(f, i) {
+
+            switch (f.type) {
+
+                case "text":
+                case "number":
+                case "date":
+                    return `<input class="form-control form-control-sm"
+                value="${f.value || ''}"
+                onchange="updateField(${i}, this.value)">`;
+
+                case "dropdown":
+                    return `<select class="form-select form-select-sm"
+                onchange="updateField(${i}, this.value)">
+                ${f.options.map(o => `
+                    <option ${o === f.value ? 'selected' : ''}>${o}</option>
+                `).join('')}
+            </select>`;
+
+                case "checkbox":
+                    return f.options.map(o => `
+                <label class="me-2">
+                    <input type="checkbox"
+                        ${f.value?.includes(o) ? 'checked' : ''}
+                        onchange="updateCheckbox(${i}, '${o}', this)">
+                    ${o}
+                </label>
+            `).join('');
+
+                case "radio":
+                    return f.options.map(o => `
+                <label class="me-2">
+                    <input type="radio" name="r_${i}"
+                        ${f.value === o ? 'checked' : ''}
+                        onchange="updateField(${i}, '${o}')">
+                    ${o}
+                </label>
+            `).join('');
+
+                case "file":
+                    return `
+                <input type="file" class="form-control form-control-sm"
+                    onchange="updateFile(${i}, this)">
+                <small>${f.value || ''}</small>
+            `;
+
+                default:
+                    return f.value || '-';
+            }
+        }
+
+        /* =========================
+           RENDER UI
+        ========================= */
+        function renderUI() {
+
+            let html = `
+    <div class="preview-card">
+        <div class="preview-header">Basic Details</div>
+        ${rowInput("Scheme", "schemeName")}
+        ${rowInput("Description", "schemeDescription")}
+        ${rowInput("States", "state", true)}
+        ${rowInput("Budget", "budget")}
+    </div>
+    `;
+
+            let grouped = {};
+
+            tempFormData.fields.forEach((f, i) => {
+                if (!grouped[f.section]) grouped[f.section] = [];
+                grouped[f.section].push({ f, i });
+            });
+
+            Object.keys(grouped).forEach(sec => {
+                html += `
+        <div class="preview-card">
+            <div class="preview-header">${formatHeading(sec)}</div>
+            ${grouped[sec].map(x => `
+                <div class="preview-row">
+                    <div class="preview-label">${x.f.name}</div>
+                    <div class="preview-value">${renderInput(x.f, x.i)}</div>
+                </div>
+            `).join('')}
+        </div>`;
+            });
+
+            document.getElementById("livePreviewContainer").innerHTML = html;
+        }
+
+        function rowInput(label, key, isArray = false) {
+            const value = isArray
+                ? tempFormData[key].join(', ')
+                : tempFormData[key];
+
+            return `
+    <div class="preview-row">
+        <div class="preview-label">${label}</div>
+        <div class="preview-value">
+            <input class="form-control form-control-sm"
+                value="${value || ''}"
+                onchange="updateBasic('${key}', this.value, ${isArray})">
+        </div>
+    </div>`;
+        }
+
+        /* =========================
+           UPDATE (TEMP STATE)
+        ========================= */
+        function updateField(i, val) {
+            tempFormData.fields[i].value = val;
+        }
+
+        function updateCheckbox(i, val, el) {
+            let arr = tempFormData.fields[i].value || [];
+
+            if (el.checked) {
+                if (!arr.includes(val)) arr.push(val);
+            } else {
+                arr = arr.filter(v => v !== val);
+            }
+
+            tempFormData.fields[i].value = arr;
+        }
+
+        function updateFile(i, el) {
+            const file = el.files[0];
+            if (file) tempFormData.fields[i].value = file.name;
+        }
+
+        function updateBasic(key, val, isArray) {
+            tempFormData[key] = isArray
+                ? val.split(',').map(v => v.trim())
+                : val;
+        }
+
+        /* =========================
+           ACTIONS
+        ========================= */
+        function handleUpdate() {
+
+            // commit changes
+            formData = deepClone(tempFormData);
+
+            // save to localStorage
+            saveToStorage(formData);
+
+            console.log("Saved:", formData);
+            alert("Update saved successfully ✅");
+        }
+
+        function handleCancel() {
+            tempFormData = deepClone(formData);
+            renderUI();
+        }
+
+        /* =========================
+           MODAL (UNCHANGED)
+        ========================= */
+        let currentAction = '';
+
+        function openPreview(action) {
+            currentAction = action;
+            alert(action + " clicked");
+        }
+
+        /* =========================
+           INIT
+        ========================= */
+        window.onload = renderUI;
+
+    </script>
+
+</body>
+
+</html>
