@@ -594,17 +594,22 @@
                 let value = '';
                 const input = document.getElementById(`val-${id}`);
 
-                if (input) {
+             if (input) {
                     if (input.type === "file") {
+
                         if (input.files && input.files.length > 0) {
-                            value = input.files[0].name;
+                            value = input.files[0].name; // new file
                         } else {
-                            // 🔥 fallback to saved name
-                            var savedText = field.getAttribute("data-file-name");
-                            value = savedText || '';
+                            var valueDiv = document.getElementById("value-" + id);
+
+                            // 🔥 safe fallback
+                            value = (valueDiv && valueDiv.getAttribute("data-file-name"))
+                                ? valueDiv.getAttribute("data-file-name")
+                                : '-';
                         }
+
                     } else {
-                        value = input.value;
+                        value = input.value || '-';
                     }
                 }
 
