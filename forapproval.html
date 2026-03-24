@@ -423,8 +423,13 @@
                 <div id="sections"></div>
                 <div class="d-flex justify-content-center gap-2 mt-3">
                     <button class="btn btn-dark btn-sm">Cancel</button>
-                    <button class="btn btn-success btn-sm" onclick="openPreview()">Approve</button>
-                    <button class="btn btn-danger btn-sm" onclick="openPreview()">Reject</button>
+                <button class="btn btn-success btn-sm" onclick="openPreview('Approved')">
+                    Approve
+                </button>
+                
+                <button class="btn btn-danger btn-sm" onclick="openPreview('Rejected')">
+                    Reject
+                </button>
                 </div>
             </div>
         </div>
@@ -712,8 +717,16 @@
             console.log("Saved:", formData);
             alert("Scheme submitted to selected states successfully ✅");
         }
-        function openPreview() {
-            updatePreview(); // generate latest preview
+      let currentAction = ''; // 🔥 global
+
+        function openPreview(action) {
+            currentAction = action; // store action
+
+            updatePreview(); // load textarea
+
+            // 🔥 update modal title
+            document.querySelector("#previewModal .modal-title").innerText =
+                action === 'Approved' ? 'Approve Scheme' : 'Reject Scheme';
 
             const modal = new bootstrap.Modal(document.getElementById('previewModal'));
             modal.show();
@@ -1056,10 +1069,13 @@
                     <div id="previewContainer"></div>
                 </div>
 
-                <div class="modal-footer">
-                    <button class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
-                    <button class="btn btn-primary btn-sm" onclick="submitReview('Approved')">Save</button>
-                </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+            <button class="btn btn-primary btn-sm" onclick="submitReview()">
+                Save
+            </button>
+             
+            </div>
 
             </div>
         </div>
