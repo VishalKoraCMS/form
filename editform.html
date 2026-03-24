@@ -596,9 +596,13 @@
 
                 if (input) {
                     if (input.type === "file") {
-                        value = input.files && input.files.length > 0
-                            ? input.files[0].name
-                            : '';
+                        if (input.files && input.files.length > 0) {
+                            value = input.files[0].name;
+                        } else {
+                            // 🔥 fallback to saved name
+                            var savedText = field.getAttribute("data-file-name");
+                            value = savedText || '';
+                        }
                     } else {
                         value = input.value;
                     }
@@ -760,9 +764,22 @@
                         var input = document.getElementById("val-" + id);
 
                         // 🔹 FILE (cannot auto-fill)
-                        if (field.type === "file") {
-                            document.getElementById("value-" + id).innerHTML +=
-                                "<small>Saved file: " + field.value + "</small>";
+                        // if (field.type === "file") {
+                        //     document.getElementById("value-" + id).innerHTML +=
+                        //         "<small>Saved file: " + field.value + "</small>";
+                        // }
+                    if (field.type === "file") {
+                            var valueDiv = document.getElementById("value-" + id);
+
+                            valueDiv.innerHTML = `
+        <input type="file" id="val-${id}" onchange="updatePreview()">
+        <small style="display:block; margin-top:5px; color:#6b7280;">
+            Saved file: ${field.value}
+        </small>
+    `;
+
+                            valueDiv.setAttribute("data-file-name", field.value);
+
                         }
 
                         // 🔹 CHECKBOX
