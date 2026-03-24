@@ -60,7 +60,7 @@
     input:focus,
     select:focus {
       background: #fff;
-      border-color: #6366f1;
+      border-color: #0d6efd;
       box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
       outline: none;
     }
@@ -76,7 +76,7 @@
     .section-title {
       font-weight: 600;
       margin-bottom: 10px;
-      border-left: 4px solid #6366f1;
+      border-left: 4px solid #0d6efd;
       padding-left: 10px;
     }
 
@@ -115,7 +115,7 @@
       width: 16px;
       height: 16px;
       cursor: pointer;
-      accent-color: #4f46e5;
+      accent-color: #0d6efd;
     }
 
     .custom-check label {
@@ -125,14 +125,14 @@
     }
 
     .btn-custom {
-      background: #6366f1;
+      background: #0d6efd;
       color: #fff;
       border-radius: 8px;
       padding: 6px 14px;
     }
     .btn-custom:hover {
-      border: 1px solid  #4f46e5;
-      color: #4f46e5;
+      border: 1px solid  #0d6efd;
+      color: #0d6efd;
     }
 
     .btn-draft {
@@ -210,8 +210,8 @@
 }
 
 .pill-btn.primary {
-  border-color: #4f46e5;
-  color: #4f46e5;
+  border-color: #0d6efd;
+  color: #0d6efd;
 }
 
 .pill-btn.secondary {
@@ -250,7 +250,6 @@
 </div>
 
   <select id="state" multiple>
-    <option value="">Select State</option>
     <option value="Andhra Pradesh">Andhra Pradesh</option>
     <option value="Arunachal Pradesh">Arunachal Pradesh</option>
     <option value="Assam">Assam</option>
@@ -287,7 +286,6 @@
     <option value="Lakshadweep">Lakshadweep</option>
     <option value="Puducherry">Puducherry</option>
     <option value="Ladakh">Ladakh</option>
-    <option value="Off Shore">Off Shore</option>
   </select>
 
       <label>Budget</label>
@@ -399,13 +397,13 @@
         <div id="basicSection"></div>
 
         <div class="add-btn">
-          <button class="btn btn-custom btn-sm" onclick="addField('basicSection')">➕ Add Field</button>
+          <button class="btn btn-primary btn-sm" onclick="addField('basicSection')">➕ Add Field</button>
         </div>
 
         <div id="sections"></div>
         <div class="d-flex justify-content-center gap-2 mt-3">
-          <button class="btn btn-draft btn-sm" onclick="saveDraft()">Save as Draft</button>
-          <button class="btn btn-custom btn-sm" onclick="openPreview()">Preview</button>
+          <button class="btn btn-secondary btn-sm" onclick="saveDraft()">Save as Draft</button>
+          <button class="btn btn-primary btn-sm" onclick="openPreview()">Preview</button>
         </div>
       </div>
     </div>
@@ -424,7 +422,7 @@
       <div class="section-title">${section}</div>
       <div id="${id}"></div>
       <div class="add-btn">
-        <button class="btn btn-outline-secondary btn-sm" onclick="addField('${id}')">➕ Add Field</button>
+        <button class="btn btn-primary btn-sm" onclick="addField('${id}')">➕ Add Field</button>
       </div>
     </div>
   `);
@@ -490,7 +488,7 @@
         optionsDiv.innerHTML = `
       <label>Options</label>
       <div id="option-list-${id}"></div>
-      <button class="btn btn-outline-secondary btn-sm" onclick="addOption(${id})">Add Option</button>
+      <button class="btn btn-primary btn-sm mt-1" onclick="addOption(${id})">Add Option</button>
     `;
       }
 
