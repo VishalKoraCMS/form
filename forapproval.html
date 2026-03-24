@@ -1,11 +1,1146 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Scheme Form Builder</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #eef2f7, #f8fafc);
+            font-family: "Segoe UI", sans-serif;
+            color: #1f2937;
+        }
+
+        .layout {
+            display: block;
+            gap: 24px;
+        }
+
+        .panel {
+            background: #fff;
+            padding: 22px;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+            width: 60%;
+            max-height: 92vh;
+            overflow-y: auto;
+        }
+
+        h2 {
+            font-size: 20px;
+            margin-bottom: 18px;
+        }
+
+        h3 {
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+
+        label {
+            font-size: 13px;
+            margin-top: 12px;
+            color: #6b7280;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+            background: #f9fafb;
+            margin-top: 6px;
+        }
+
+        input:focus,
+        select:focus {
+            background: #fff;
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+            outline: none;
+        }
+
+        .section-box {
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 16px;
+            margin-top: 20px;
+            background: #fff;
+        }
+
+        .section-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            border-left: 4px solid #0d6efd;
+            padding-left: 10px;
+        }
+
+        .add-btn {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 10px;
+        }
+
+        .field-card {
+            border: 1px solid #e5e7eb;
+            padding: 14px;
+            margin-top: 12px;
+            border-radius: 8px;
+            background: #f9fafb;
+            position: relative;
+        }
+
+        .remove-btn {
+            position: absolute;
+            right: 10px;
+            top: 8px;
+            cursor: pointer;
+            color: #9ca3af;
+        }
+
+        /* CUSTOM CHECKBOX */
+        .custom-check {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .custom-check input {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+            accent-color: #0d6efd;
+        }
+
+        .custom-check label {
+            margin: 0;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .btn-custom {
+            background: #0d6efd;
+            color: #fff;
+            border-radius: 8px;
+            padding: 6px 14px;
+        }
+
+        .btn-custom:hover {
+            border: 1px solid #0d6efd;
+            color: #0d6efd;
+        }
+
+        .btn-draft {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .btn-save {
+            background: #111827;
+            color: #fff;
+        }
+
+        .preview-section {
+            border: 1px solid #e5e7eb;
+            padding: 12px;
+            border-radius: 8px;
+            background: #f9fafb;
+            margin-bottom: 12px;
+        }
+
+        .preview-card {
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 16px;
+            background: #fff;
+        }
+
+        .preview-header {
+            background: #f3f4f6;
+            padding: 10px 14px;
+            font-weight: 600;
+            font-size: 14px;
+            border-bottom: 1px solid #d1d5db;
+        }
+
+        .preview-row {
+            display: flex;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .preview-row:last-child {
+            border-bottom: none;
+        }
+
+        .preview-label {
+            width: 40%;
+            padding: 10px 14px;
+            background: #f9fafb;
+            font-weight: 500;
+        }
+
+        .preview-value {
+            width: 60%;
+            padding: 10px 14px;
+        }
+
+        .action-buttons {
+            display: none;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .pill-btn {
+            padding: 2px 10px;
+            font-size: 12px;
+            border-radius: 50px;
+            border: 1px solid #ccc;
+            background-color: #f8f9fa;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .pill-btn:hover {
+            background-color: #e2e6ea;
+        }
+
+        .pill-btn.primary {
+            border-color: #0d6efd;
+            color: #0d6efd;
+        }
+
+        .pill-btn.secondary {
+            border-color: #6c757d;
+            color: #6c757d;
+        }
+
+        .choices__list--multiple .choices__item {
+            background-color: var(--choices-primary-color, #3d8bfd) !important;
+            border: 1px solid color-mix(in srgb, var(--choices-primary-color, #0d6efd) 95%, var(--choices-darken, black)) !important;
+        }
+        .highlight-row {
+  background-color: #fff7ed;
+  border-left: 4px solid #f97316;
+}
+
+.highlight-row .preview-label {
+  font-weight: 600;
+  color: #c2410c;
+}
+
+.highlight-row .preview-value {
+  font-weight: 600;
+}
+    </style>
 </head>
+
 <body>
-    <h1>Scheme Approval form</h1>
+
+    <div class="container-fluid py-3 d-flex justify-content-center">
+        <div class="layout  d-flex justify-content-center ">
+
+            <!-- FORM -->
+            <div class="panel mb-3">
+
+                <h2>Basic Details</h2>
+
+                <label>Scheme Name</label>
+                <input type="text" id="schemeName" oninput="updatePreview()">
+
+                <label>Scheme Description</label>
+                <textarea id="schemeDescription" rows="3" oninput="updatePreview()"
+                    style="width:100%; padding:10px; border-radius:8px; border:1px solid #e5e7eb; background:#f9fafb;"></textarea>
+
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+
+                    <label style="margin:0;">State</label>
+
+                    <div style="display:flex; gap:6px;">
+                        <button type="button" class="pill-btn primary" onclick="selectAllStates()" disabled>All</button>
+                        <button type="button" class="pill-btn secondary" onclick="clearAllStates()" disabled>Clear</button>
+                    </div>
+
+                </div>
+
+                <select id="state" multiple>
+                    <option value="Andhra Pradesh">Andhra Pradesh</option>
+                    <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                    <option value="Assam">Assam</option>
+                    <option value="Bihar">Bihar</option>
+                    <option value="Chhattisgarh">Chhattisgarh</option>
+                    <option value="Goa">Goa</option>
+                    <option value="Gujarat">Gujarat</option>
+                    <option value="Haryana">Haryana</option>
+                    <option value="Himachal Pradesh">Himachal Pradesh</option>
+                    <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+                    <option value="Jharkhand">Jharkhand</option>
+                    <option value="Karnataka">Karnataka</option>
+                    <option value="Kerala">Kerala</option>
+                    <option value="Madhya Pradesh">Madhya Pradesh</option>
+                    <option value="Maharashtra">Maharashtra</option>
+                    <option value="Manipur">Manipur</option>
+                    <option value="Meghalaya">Meghalaya</option>
+                    <option value="Mizoram">Mizoram</option>
+                    <option value="Nagaland">Nagaland</option>
+                    <option value="Odisha">Odisha</option>
+                    <option value="Punjab">Punjab</option>
+                    <option value="Rajasthan">Rajasthan</option>
+                    <option value="Sikkim">Sikkim</option>
+                    <option value="Tamil Nadu">Tamil Nadu</option>
+                    <option value="Telangana">Telangana</option>
+                    <option value="Tripura">Tripura</option>
+                    <option value="Uttarakhand">Uttarakhand</option>
+                    <option value="Uttar Pradesh">Uttar Pradesh</option>
+                    <option value="West Bengal">West Bengal</option>
+                    <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
+                    <option value="Chandigarh">Chandigarh</option>
+                    <option value="Dadra & Nagar Haveli and Daman & Diu">Dadra & Nagar Haveli and Daman & Diu</option>
+                    <option value="Delhi">Delhi</option>
+                    <option value="Lakshadweep">Lakshadweep</option>
+                    <option value="Puducherry">Puducherry</option>
+                    <option value="Ladakh">Ladakh</option>
+                </select>
+
+                <label>Budget</label>
+                <input type="number" id="budget" oninput="updatePreview()">
+                <label>Ministry</label>
+                <input type="text" id="ministry" oninput="updatePreview()">
+
+                <label>Sector</label>
+                <select id="sector" onchange="updatePreview()">
+                    <option value="">Select Sector</option>
+
+                    <option value="967">ARI & Training</option>
+                    <option value="815">Agriculture</option>
+                    <option value="912">Alcohols & Derivatives</option>
+                    <option value="1004">Ammonia Energy</option>
+                    <option value="966">Animal Husbandry</option>
+                    <option value="942">Apparels & Garments</option>
+                    <option value="842">Auto Components</option>
+                    <option value="841">Auto Manufacturing</option>
+                    <option value="840">Automobile</option>
+                    <option value="885">Aviation & Aviation Infrastructure</option>
+                    <option value="837">Bio-Power Energy</option>
+                    <option value="946">BioTech</option>
+                    <option value="951">Cement</option>
+                    <option value="911">Chemicals</option>
+                    <option value="844">Coal</option>
+                    <option value="890">Commercial</option>
+                    <option value="970">Culture</option>
+                    <option value="922">Data Centers</option>
+                    <option value="920">Defense Production</option>
+                    <option value="947">Education</option>
+                    <option value="930">Electronics</option>
+                    <option value="908">Exploration & Production</option>
+                    <option value="816">Fertilizers & Pesticides</option>
+                    <option value="811">Food Processing</option>
+                    <option value="949">Gems and Jewellery</option>
+                    <option value="979">Health & Medical Education</option>
+                    <option value="927">Healthcare</option>
+                    <option value="939">Heavy Machinery & Equipment</option>
+                    <option value="981">Hospitality</option>
+                    <option value="982">Housing & Urban Development</option>
+                    <option value="828">Hydro Energy</option>
+                    <option value="1003">Hydrogen Energy</option>
+                    <option value="921">IT/ITES</option>
+                    <option value="962">Industrial Corridor</option>
+                    <option value="983">Industries and Commerce</option>
+                    <option value="818">Irrigation</option>
+                    <option value="988">Labour & Employment</option>
+                    <option value="993">Land & Revenue</option>
+                    <option value="944">Leather</option>
+                    <option value="855">Logistic Parks</option>
+                    <option value="814">Meat & Poultry</option>
+                    <option value="952">Metro</option>
+                    <option value="843">Mining</option>
+                    <option value="835">Nuclear Energy</option>
+                    <option value="907">Oil & Gas</option>
+                    <option value="1008">Other</option>
+                    <option value="919">Paints & Dyes</option>
+                    <option value="917">Paper & Paper Products</option>
+                    <option value="914">Petrochemicals</option>
+                    <option value="945">Pharmaceuticals</option>
+                    <option value="916">Plastics & Plastic Products</option>
+                    <option value="825">Power Generation</option>
+                    <option value="839">Power Transmission & Distribution</option>
+                    <option value="953">Public Works</option>
+                    <option value="879">Railways</option>
+                    <option value="889">Real Estate</option>
+                    <option value="955">Refinery</option>
+                    <option value="971">Rehabilitation and Reconstruction</option>
+                    <option value="903">Residential</option>
+                    <option value="940">Retail Chains & Shops</option>
+                    <option value="872">Roads & Highways</option>
+                    <option value="918">Rubber & Rubber Products</option>
+                    <option value="994">Rural Development</option>
+                    <option value="997">School Education</option>
+                    <option value="995">Science and Technology</option>
+                    <option value="882">Shipping</option>
+                    <option value="996">Skill Development</option>
+                    <option value="913">Soaps, Detergents & Cosmetics</option>
+                    <option value="998">Social Welfare</option>
+                    <option value="924">Software & Smart Solutions</option>
+                    <option value="834">Solar Energy</option>
+                    <option value="948">Space</option>
+                    <option value="1002">Sports/Youth Affairs</option>
+                    <option value="950">Steel</option>
+                    <option value="926">Telecommunication</option>
+                    <option value="941">Textiles</option>
+                    <option value="826">Thermal Energy</option>
+                    <option value="836">Tidal Energy</option>
+                    <option value="857">Tourism, Hospitality & Wellness</option>
+                    <option value="909">Transportation & Storage / Pipelines</option>
+                    <option value="1001">Tribal Affairs</option>
+                    <option value="856">Warehouse / Cold Chain</option>
+                    <option value="931">Waste & Water</option>
+                    <option value="932">Water Collection, treatment and supply</option>
+                    <option value="963">White Goods</option>
+                    <option value="831">Wind Energy</option>
+                    <option value="943">Yarns & Fabrics</option>
+                </select>
+                <label>Sub Sector</label>
+                <select id="subSector" onchange="updatePreview()">
+                    <option value="">Select Sub Sector</option>
+                    <option value="S1">S1</option>
+                    <option value="S2">S2</option>
+                    <option value="S3">S3</option>
+                    <option value="S4">S4</option>
+                    <option value="S5">S5</option>
+                </select>
+                <div id="basicSection"></div>
+
+                <div class="add-btn">
+                    <button class="btn btn-primary btn-sm" onclick="addField('basicSection')">➕ Add Field</button>
+                </div>
+
+                <div id="sections"></div>
+                <div class="d-flex justify-content-center gap-2 mt-3">
+                    <button class="btn btn-secondary btn-sm" onclick="saveDraft()">Save as Draft</button>
+                    <button class="btn btn-primary btn-sm" onclick="openPreview()">Preview</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const sectionNames = ["Financial Details", "KPI Metrics", "Others"];
+        let fieldCounter = 0;
+        const sectionsDiv = document.getElementById("sections");
+
+        sectionNames.forEach(section => {
+            const id = section.replace(/\s/g, "");
+
+            sectionsDiv.insertAdjacentHTML("beforeend", `
+    <div class="section-box">
+      <div class="section-title">${section}</div>
+      <div id="${id}"></div>
+      <div class="add-btn">
+        <button class="btn btn-primary btn-sm" onclick="addField('${id}')">➕ Add Field</button>
+      </div>
+    </div>
+  `);
+        });
+
+        function addField(sectionId) {
+            fieldCounter++;
+
+            const html = `
+    <div class="field-card" data-section="${sectionId}" id="field-${fieldCounter}">
+      <span class="remove-btn" onclick="this.parentElement.remove(); updatePreview()">✖</span>
+
+      <label>Field Name</label>
+      <input type="text" id="name-${fieldCounter}" oninput="updatePreview()">
+
+      <label>Field Type</label>
+      <select id="type-${fieldCounter}" onchange="renderInput(${fieldCounter})">
+        <option value="text">Text</option>
+        <option value="number">Number</option>
+        <option value="date">Date</option>
+        <option value="dropdown">Dropdown</option>
+        <option value="radio">Radio</option>
+        <option value="checkbox">Checkbox</option>
+        <option value="file">File Upload</option>
+      </select>
+
+      <div class="custom-check">
+        <input type="checkbox" id="mandatory-${fieldCounter}">
+        <label for="mandatory-${fieldCounter}">Mandatory</label>
+      </div>
+  <label>Field Value</label>
+      <div id="value-${fieldCounter}"></div>
+      <div id="options-${fieldCounter}" style="display:none;"></div>
+    </div>
+  `;
+
+            document.getElementById(sectionId).insertAdjacentHTML("beforeend", html);
+            renderInput(fieldCounter);
+        }
+
+        function formatHeading(text) {
+            return text.replace(/([A-Z])/g, ' $1').replace(/^./, s => s.toUpperCase());
+        }
+
+        function renderInput(id) {
+            const type = document.getElementById(`type-${id}`).value;
+            const valueDiv = document.getElementById(`value-${id}`);
+            const optionsDiv = document.getElementById(`options-${id}`);
+            const nameInput = document.getElementById(`name-${id}`);
+
+
+            optionsDiv.style.display = "none";
+            if (type === 'file') {
+                nameInput.value = "Attached Document";
+            }
+            if (type === 'text' || type === 'number' || type === 'date') {
+                valueDiv.innerHTML = `<input type="${type}" id="val-${id}" oninput="updatePreview()">`;
+            } else if (type === 'file') {
+                valueDiv.innerHTML = `<input type="file" id="val-${id}" onchange="updatePreview()">`;
+            } else {
+                valueDiv.innerHTML = `<div id="input-${id}"></div>`;
+                optionsDiv.style.display = "block";
+                optionsDiv.innerHTML = `
+      <label>Options</label>
+      <div id="option-list-${id}"></div>
+      <button class="btn btn-primary btn-sm mt-1" onclick="addOption(${id})" disabled>Add Option</button>
+    `;
+            }
+
+            updatePreview();
+        }
+
+        function addOption(id) {
+            document.getElementById(`option-list-${id}`).insertAdjacentHTML("beforeend",
+                `<input type="text" placeholder="Option" oninput="updateOptions(${id})">`
+            );
+        }
+
+        function updateOptions(id) {
+            const type = document.getElementById(`type-${id}`).value;
+            const inputs = document.querySelectorAll(`#option-list-${id} input`);
+            const container = document.getElementById(`input-${id}`);
+
+            container.innerHTML = '';
+
+            inputs.forEach(input => {
+                if (input.value) {
+                    if (type === 'dropdown') {
+                        container.innerHTML += `<option>${input.value}</option>`;
+                    } else {
+                        container.innerHTML += `
+          <div class="custom-check">
+            <input type="${type}" name="val-${id}" value="${input.value}" onchange="updatePreview()">
+            <label>${input.value}</label>
+          </div>
+        `;
+                    }
+                }
+            });
+
+            if (type === 'dropdown') {
+                container.innerHTML = `<select id="val-${id}" oninput="updatePreview()">${container.innerHTML}</select>`;
+            }
+
+            updatePreview();
+        }
+
+        function updatePreview() {
+                const preview = document.getElementById("previewContainer");
+                const selectedStates = stateChoice.getValue(true).join(', ') || '-';
+                // BASIC DETAILS
+                let basicHTML = `
+                        <div class="preview-card">
+                        <div class="preview-header">Basic Details</div>
+
+                        <div class="preview-row">
+                            <div class="preview-label">Scheme Name</div>
+                            <div class="preview-value">${schemeName.value || '-'}</div>
+                        </div>
+                        <div class="preview-row">
+                        <div class="preview-label">Scheme Description</div>
+                        <div class="preview-value">${schemeDescription.value || '-'}</div>
+                        </div>
+
+                        <div class="preview-row">
+                        <div class="preview-label">State</div>
+                        <div class="preview-value">${selectedStates}</div>
+                        </div>
+
+                        <div class="preview-row">
+                        <div class="preview-label">Budget</div>
+                        <div class="preview-value">${budget.value || '-'}</div>
+                        </div>
+                        <div class="preview-row">
+                            <div class="preview-label">Ministry</div>
+                            <div class="preview-value">${ministry.value || '-'}</div>
+                        </div>
+
+                        <div class="preview-row">
+                            <div class="preview-label">Sector</div>
+                            <div class="preview-value">${sector.selectedIndex >= 0 ? sector.options[sector.selectedIndex].text : '-'}</div>
+                        </div>
+                            <div class="preview-row">
+                        <div class="preview-label">Sub Sector</div>
+                        <div class="preview-value">${subSector.options[subSector.selectedIndex]?.text || '-'}</div>
+                        </div>
+                        </div>
+                    `;
+
+                let grouped = {
+                    FinancialDetails: '',
+                    KPIMetrics: '',
+                    Others: '',
+                    basicSection: ''
+                };
+
+                document.querySelectorAll(".field-card").forEach(field => {
+                    const id = field.id.split('-')[1];
+                    const section = field.getAttribute("data-section");
+                    const name = document.getElementById(`name-${id}`).value;
+
+                    let value = '';
+                    const input = document.getElementById(`val-${id}`);
+
+                    if (input) {
+                        if (input.type === "file") {
+
+                            if (input.files && input.files.length > 0) {
+                                value = input.files[0].name; // new file
+                            } else {
+                                // 🔥 get saved file name from DOM
+                                var valueDiv = document.getElementById("value-" + id);
+                                value = valueDiv ? valueDiv.getAttribute("data-file-name") : '';
+                            }
+
+                        } else {
+                            value = input.value || '-';
+                        }
+                    }
+
+                    const radio = document.querySelector(`input[name="val-${id}"]:checked`);
+                    if (radio) value = radio.value;
+
+                    const checkboxes = document.querySelectorAll(`#input-${id} input[type=checkbox]:checked`);
+                    if (checkboxes.length) {
+                        value = Array.from(checkboxes).map(c => c.value).join(', ');
+                    }
+
+                    if (name) {
+                      var isHighlight = field.getAttribute("data-highlight") === "true";
+
+                        grouped[section] += `
+  <div class="preview-row ${isHighlight ? 'highlight-row' : ''}">
+    <div class="preview-label">${name}</div>
+    <div class="preview-value">${value || '-'}</div>
+  </div>
+`;
+                    }
+                });
+
+                preview.innerHTML = basicHTML;
+
+                for (let key in grouped) {
+                    if (grouped[key]) {
+                        preview.innerHTML += `
+            <div class="preview-card">
+            <div class="preview-header">${formatHeading(key)}</div>
+            ${grouped[key]}
+            </div>
+             `;
+                    }
+                }
+
+            }
+
+        function saveDraft() {
+            var formData = {
+                schemeName: document.getElementById("schemeName").value,
+                schemeDescription: document.getElementById("schemeDescription").value,
+                state: stateChoice.getValue(true),
+                budget: document.getElementById("budget").value,
+                ministry: document.getElementById("ministry").value,
+                sector: document.getElementById("sector").value,
+                subSector: document.getElementById("subSector").value,
+                fields: []
+            };
+
+            var allFields = document.querySelectorAll(".field-card");
+
+            allFields.forEach(function (field) {
+                var id = field.id.split('-')[1];
+                var value = '';
+
+                // 🔹 get value
+                var input = document.getElementById("val-" + id);
+
+                if (input) {
+                    if (input.type === "file") {
+                        value = input.files && input.files.length > 0
+                            ? input.files[0].name
+                            : '';
+                    } else {
+                        value = input.value;
+                    }
+                }
+
+                // radio
+                var radio = document.querySelector("input[name='val-" + id + "']:checked");
+                if (radio) value = radio.value;
+
+                // checkbox
+                var checkboxes = document.querySelectorAll("#input-" + id + " input[type=checkbox]:checked");
+                if (checkboxes.length > 0) {
+                    value = [];
+                    checkboxes.forEach(function (c) {
+                        value.push(c.value);
+                    });
+                }
+
+                // 🔹 collect options
+                var options = [];
+                var optionInputs = document.querySelectorAll("#option-list-" + id + " input");
+                if (optionInputs.length > 0) {
+                    optionInputs.forEach(function (opt) {
+                        if (opt.value) {
+                            options.push(opt.value);
+                        }
+                    });
+                }
+
+                formData.fields.push({
+                    name: document.getElementById("name-" + id).value,
+                    type: document.getElementById("type-" + id).value,
+                    mandatory: document.getElementById("mandatory-" + id).checked,
+                    value: value,
+                    options: options, // ✅ important
+                    section: field.getAttribute("data-section")
+                });
+            });
+
+            localStorage.setItem("schemeFormDraft", JSON.stringify(formData));
+
+            console.log("Saved:", formData);
+            alert("Scheme draft saved successfully 📝");
+        }
+        function saveFinal() {
+            var formData = {
+                schemeName: document.getElementById("schemeName").value,
+                schemeDescription: document.getElementById("schemeDescription").value,
+                state: stateChoice.getValue(true),
+                budget: document.getElementById("budget").value,
+                ministry: document.getElementById("ministry").value,
+                sector: document.getElementById("sector").value,
+                subSector: document.getElementById("subSector").value,
+                fields: []
+            };
+
+            var allFields = document.querySelectorAll(".field-card");
+
+            allFields.forEach(function (field) {
+                var id = field.id.split('-')[1];
+                var value = '';
+
+                // 🔹 get value
+                var input = document.getElementById("val-" + id);
+
+                if (input) {
+                    if (input.type === "file") {
+                        value = input.files && input.files.length > 0
+                            ? input.files[0].name
+                            : '';
+                    } else {
+                        value = input.value;
+                    }
+                }
+
+                // radio
+                var radio = document.querySelector("input[name='val-" + id + "']:checked");
+                if (radio) value = radio.value;
+
+                // checkbox
+                var checkboxes = document.querySelectorAll("#input-" + id + " input[type=checkbox]:checked");
+                if (checkboxes.length > 0) {
+                    value = [];
+                    checkboxes.forEach(function (c) {
+                        value.push(c.value);
+                    });
+                }
+
+                // 🔹 collect options
+                var options = [];
+                var optionInputs = document.querySelectorAll("#option-list-" + id + " input");
+                if (optionInputs.length > 0) {
+                    optionInputs.forEach(function (opt) {
+                        if (opt.value) {
+                            options.push(opt.value);
+                        }
+                    });
+                }
+
+                formData.fields.push({
+                    name: document.getElementById("name-" + id).value,
+                    type: document.getElementById("type-" + id).value,
+                    mandatory: document.getElementById("mandatory-" + id).checked,
+                    value: value,
+                    options: options, // ✅ important
+                    section: field.getAttribute("data-section")
+                });
+            });
+
+            localStorage.setItem("schemeFormDraft", JSON.stringify(formData));
+
+            console.log("Saved:", formData);
+            alert("Scheme submitted to selected states successfully ✅");
+        }
+        function openPreview() {
+            updatePreview(); // generate latest preview
+
+            const modal = new bootstrap.Modal(document.getElementById('previewModal'));
+            modal.show();
+        }
+        const stateChoice = new Choices('#state', {
+            removeItemButton: true,
+            searchEnabled: true,
+            placeholderValue: 'Select State'
+        });
+
+        // Select All
+        function selectAllStates() {
+            const allValues = Array.from(document.querySelectorAll('#state option'))
+                .map(opt => opt.value);
+
+            stateChoice.setChoiceByValue(allValues);
+        }
+
+        // Clear All
+        function clearAllStates() {
+            stateChoice.removeActiveItems();
+        }
+        function loadReadOnlyForm(data) {
+
+                // 🔹 BASIC
+                document.getElementById("schemeName").value = data.schemeName || '';
+                document.getElementById("schemeDescription").value = data.schemeDescription || '';
+                document.getElementById("budget").value = data.budget || '';
+                document.getElementById("ministry").value = data.ministry || '';
+                document.getElementById("sector").value = data.sector || '';
+                document.getElementById("subSector").value = data.subSector || '';
+
+                // 🔹 STATES
+                if (data.state && stateChoice) {
+                    stateChoice.setChoiceByValue(data.state);
+                    stateChoice.disable(); // 🔥 disable multi select
+                }
+
+                // 🔹 DISABLE BASIC INPUTS
+                document.querySelectorAll("input, select, textarea").forEach(el => {
+                    el.disabled = true;
+                });
+
+                // 🔹 DYNAMIC FIELDS
+                if (data.fields && data.fields.length > 0) {
+
+                    data.fields.forEach(function (field) {
+
+                        addField(field.section);
+                        var id = fieldCounter;
+
+                        document.getElementById("name-" + id).value = field.name || '';
+                        document.getElementById("type-" + id).value = field.type || '';
+                        document.getElementById("mandatory-" + id).checked = field.mandatory || false;
+
+                        renderInput(id);
+
+                        setTimeout(function () {
+
+                            // 🔥 restore options
+                            if (field.options && field.options.length > 0) {
+                                var optionList = document.getElementById("option-list-" + id);
+
+                                if (optionList) {
+                                    optionList.innerHTML = '';
+
+                                    field.options.forEach(function (opt) {
+                                        optionList.innerHTML += `<input type="text" value="${opt}">`;
+                                    });
+
+                                    updateOptions(id);
+                                }
+                            }
+
+                            var input = document.getElementById("val-" + id);
+
+                            // FILE
+                         if (field.type === "file") {
+                                var valueDiv = document.getElementById("value-" + id);
+
+                                valueDiv.innerHTML = `
+    <input type="file" id="val-${id}">
+    <small>Saved file: ${field.value}</small>
+  `;
+
+                                // 🔥 IMPORTANT
+                                valueDiv.setAttribute("data-file-name", field.value);
+                            }
+
+                            // CHECKBOX
+                            else if (field.type === "checkbox") {
+                                if (Array.isArray(field.value)) {
+                                    field.value.forEach(function (val) {
+                                        var checkbox = document.querySelector(
+                                            "#input-" + id + " input[value='" + val + "']"
+                                        );
+                                        if (checkbox) checkbox.checked = true;
+                                    });
+                                }
+                            }
+
+                            // RADIO
+                            else if (field.type === "radio") {
+                                var radio = document.querySelector(
+                                    "input[name='val-" + id + "'][value='" + field.value + "']"
+                                );
+                                if (radio) radio.checked = true;
+                            }
+
+                            // OTHER
+                            else {
+                                if (input) input.value = field.value || '';
+                            }
+
+                            // 🔥 disable all inside this field
+                            document.querySelectorAll(`#field-${id} input, #field-${id} select`).forEach(el => {
+                                el.disabled = true;
+                            });
+
+                        }, 100);
+                    });
+                }
+            }
+            const formData= {
+                    "schemeName": "Industrial Growth Incentive Scheme",
+                    "schemeDescription": "Provides financial and infrastructure support for industrial expansion across multiple states.",
+                    "state": [
+                        "Gujarat",
+                        "Maharashtra",
+                        "Karnataka"
+                    ],
+                    "budget": "10000000",
+                    "ministry": "Ministry of Heavy Industries",
+                    "sector": "921",    
+                    "subSector": "S3",
+                    "fields": [
+                        {
+                            "name": "Beneficiary Name",
+                            "type": "text",
+                            "mandatory": false,
+                            "value": "ABC Industries Pvt Ltd",
+                            "options": [],
+                            "section": "basicSection",
+                            "isHighLight": false
+                        },
+                        {
+                            "name": "Number of Employees",
+                            "type": "number",
+                            "mandatory": false,
+                            "value": "150",
+                            "options": [],
+                            "section": "basicSection",
+                            "isHighLight": true
+                        },
+                        {
+                            "name": "Registration Date",
+                            "type": "date",
+                            "mandatory": false,
+                            "value": "2025-12-15",
+                            "options": [],
+                            "section": "basicSection",
+                            "isHighLight": true
+                        },
+                        {
+                            "name": "Business Type",
+                            "type": "dropdown",
+                            "mandatory": false,
+                            "value": "Manufacturing",
+                            "options": [
+                                "Manufacturing",
+                                "Service",
+                                "Trading"
+                            ],
+                            "section": "basicSection",
+                            "isHighLight": true
+                        },
+                        {
+                            "name": "Is MSME Registered",
+                            "type": "radio",
+                            "mandatory": false,
+                            "value": "Yes",
+                            "options": [
+                                "Yes",
+                                "No"
+                            ],
+                            "section": "basicSection",
+                            "isHighLight": true
+                        },
+                        {
+                            "name": "Applicable Benefits",
+                            "type": "checkbox",
+                            "mandatory": false,
+                            "value": [
+                                "Subsidy",
+                                "Loan Support"
+                            ],
+                            "options": [
+                                "Tax Exemption",
+                                "Subsidy",
+                                "Loan Support"
+                            ],
+                            "section": "basicSection",
+                            "isHighLight": true
+                        },
+                        {
+                            "name": "Attached Document",
+                            "type": "file",
+                            "mandatory": false,
+                            "value": "registration-certificate.pdf",
+                            "options": [],
+                            "section": "basicSection",
+                            "isHighLight": true
+                        },
+                        {
+                            "name": "Project Name",
+                            "type": "text",
+                            "mandatory": false,
+                            "value": "Solar Plant Expansion",
+                            "options": [],
+                            "section": "FinancialDetails",
+                            "isHighLight": true
+                        },
+                        {
+                            "name": "Total Investment",
+                            "type": "number",
+                            "mandatory": false,
+                            "value": "2500000",
+                            "options": [],
+                            "section": "FinancialDetails",
+                            "isHighLight": true
+                        },
+                        {
+                            "name": "Start Date",
+                            "type": "date",
+                            "mandatory": false,
+                            "value": "2026-04-01",
+                            "options": [],
+                            "section": "FinancialDetails",
+                            "isHighLight": true
+                        },
+                        {
+                            "name": "Attached Document",
+                            "type": "file",
+                            "mandatory": false,
+                            "value": "dummy-pdf_2.pdf",
+                            "options": [],
+                            "section": "FinancialDetails",
+                            "isHighLight": true
+                        },
+                        {
+                            "name": "Performance Rating",
+                            "type": "dropdown",
+                            "mandatory": false,
+                            "value": "Excellent",
+                            "options": [
+                                "Poor",
+                                "Average",
+                                "Good",
+                                "Very Good",
+                                "Excellent"
+                            ],
+                            "section": "KPIMetrics",
+                            "isHighLight": true
+                        },
+                        {
+                            "name": "Approval Status",
+                            "type": "radio",
+                            "mandatory": false,
+                            "value": "Approved",
+                            "options": [
+                                "Pending",
+                                "Approved",
+                                "Rejected"
+                            ],
+                            "section": "KPIMetrics",
+                            "isHighLight": true
+                        },
+                        {
+                            "name": "Facilities Provided",
+                            "type": "checkbox",
+                            "mandatory": false,
+                            "value": [
+                                "Funding",
+                                "Training"
+                            ],
+                            "options": [
+                                "Funding",
+                                "Training",
+                                "Infrastructure",
+                                "Mentorship"
+                            ],
+                            "section": "Others",
+                            "isHighLight": true
+                        },
+                        {
+                            "name": "Remarks",
+                            "type": "text",
+                            "mandatory": false,
+                            "value": "Project meets all eligibility criteria and shows strong growth potential.",
+                            "options": [],
+                            "section": "Others",
+                            "isHighLight": true
+                        }
+                    ]
+                }
+          window.onload = function () {
+                loadReadOnlyForm(formData);
+            };
+                document.querySelectorAll(".add-btn, .remove-btn, .btn-draft, .btn-save").forEach(el => {
+                        el.style.display = "none";
+                    });
+                    document.getElementById(`field-${id}`).setAttribute(
+                            "data-highlight",
+                            field.isHighLight ? "true" : "false"
+                        );
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- PREVIEW MODAL -->
+    <div class="modal fade" id="previewModal" tabindex="-1">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title">Preview</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    <div id="previewContainer"></div>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+                    <button class="btn btn-draft btn-sm" onclick="saveDraft()">Save Draft</button>
+                    <button class="btn btn-save btn-sm" onclick="saveFinal()">Save</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
 </body>
+
 </html>
+
