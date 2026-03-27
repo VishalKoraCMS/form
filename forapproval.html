@@ -130,7 +130,7 @@
                         "value": "ABC Industries Pvt Ltd",
                         "options": [],
                         "section": "basicSection",
-                        "isHighLight": true
+                        "isHighLight": false
                     },
                     {
                         "name": "Number of Employees",
@@ -189,7 +189,7 @@
                             "Loan Support"
                         ],
                         "section": "basicSection",
-                        "isHighLight": true
+                        "isHighLight": false
                     },
                     {
                         "name": "Attached Document",
@@ -216,7 +216,7 @@
                         "value": "2500000",
                         "options": [],
                         "section": "FinancialDetails",
-                        "isHighLight": true
+                        "isHighLight": false
                     },
                     {
                         "name": "Start Date",
@@ -249,7 +249,7 @@
                             "Excellent"
                         ],
                         "section": "KPIMetrics",
-                        "isHighLight": true
+                        "isHighLight": false
                     },
                     {
                         "name": "Approval Status",
@@ -381,7 +381,7 @@
 
         // ✅ INIT
        window.onload = function () {
-            ensureServedKPI();  // ✅ add field
+             ensureAllFields();  // ✅ add field
             updatePreview();    // ✅ render UI
         };
 
@@ -389,25 +389,70 @@
                    window.location.href = "https://www.figma.com/proto/eIUrGhDQoOaGgburEGwHlT/SMG?node-id=269-5098&t=aRX6xEC4PNxRmAis-0&scaling=scale-down-width&content-scaling=fixed&starting-point-node-id=269%3A4832&page-id=0%3A1"; // 👈 change this to your page
                 // window.location.href = "https://www.figma.com/proto/eIUrGhDQoOaGgburEGwHlT/SMG?node-id=291-5533&t=aRX6xEC4PNxRmAis-0&scaling=scale-down-width&content-scaling=fixed&starting-point-node-id=61%3A2&page-id=0%3A1&hide-ui=1"; // 👈 change this to your page
             }
-            function ensureServedKPI() {
-                    const exists = formData.fields.some(
-                        f => f.name === "Served KPI" && f.section === "KPIMetrics"
+            function ensureAllFields() {
+
+                    /* ================= KPI ================= */
+
+                    // 👉 remove old KPI fields if already present (important)
+                    formData.fields = formData.fields.filter(
+                        f => !(f.section === "KPIMetrics" &&
+                            (f.name === "Served KPI" || f.name === "Total KPI"))
                     );
 
-                    if (!exists) {
-                        const index = formData.fields.findIndex(f => f.section === "KPIMetrics");
+                    // 👉 find Approval Status index
+                    const approvalIndex = formData.fields.findIndex(
+                        f => f.section === "KPIMetrics" && f.name === "Approval Status"
+                    );
 
-                        if (index !== -1) {
-                            formData.fields.splice(index, 0, {
+                    if (approvalIndex !== -1) {
+                        formData.fields.splice(approvalIndex + 1, 0,
+                            {
+                                name: "Total KPI",
+                                type: "number",
+                                value: "100",
+                                section: "KPIMetrics",
+                                isHighLight: true  
+                            },
+                            {
                                 name: "Served KPI",
                                 type: "number",
-                                mandatory: false,
-                                value: "50",   // ✅ default value
-                                options: [],
+                                value: "50",
                                 section: "KPIMetrics",
-                                isHighLight: false   // optional highlight
-                            });
-                        }
+                                isHighLight: true  
+                            }
+                        );
+                    }
+
+                    /* ================= FINANCIAL ================= */
+
+                    // 👉 remove old financial fields if exist
+                    formData.fields = formData.fields.filter(
+                        f => !(f.section === "FinancialDetails" &&
+                            (f.name === "Allocated Budget" || f.name === "Utilized Budget"))
+                    );
+
+                    // 👉 find Attached Document index
+                    const attachIndex = formData.fields.findIndex(
+                        f => f.section === "FinancialDetails" && f.name === "Attached Document"
+                    );
+
+                    if (attachIndex !== -1) {
+                        formData.fields.splice(attachIndex, 0,
+                            {
+                                name: "Allocated Budget",
+                                type: "number",
+                                value: "2500000",
+                                section: "FinancialDetails",
+                                isHighLight: true  
+                            },
+                            {
+                                name: "Utilized Budget",
+                                type: "number",
+                                value: "1000000",
+                                section: "FinancialDetails",
+                                isHighLight: true  
+                            }
+                        );
                     }
                 }
     </script>

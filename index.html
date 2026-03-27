@@ -803,25 +803,68 @@ color-mix(in srgb, var(--choices-primary-color, #0d6efd) 95%, var(--choices-dark
       function clearAllStates() {
         stateChoice.removeActiveItems();
       }
-      function addServedKPIField() {
-          fieldCounter++;
-
-          const html = `
-    <div class="field-card" data-section="KPIMetrics" id="field-${fieldCounter}">
       
+       function addFixedFields() {
+
+          /* ================= KPI ================= */
+
+          const kpiSection = document.getElementById("KPIMetrics");
+
+          // 👉 find Approval Status field
+          const approvalField = Array.from(kpiSection.children).find(el =>
+            el.innerText.includes("Approval Status")
+          );
+
+          // 👉 Total KPI
+          const totalKPI = `
+    <div class="field-card" data-section="KPIMetrics">
+      <label>Total KPI</label>
+      <input type="number" value="100" readonly style="background:#e9ecef;">
+    </div>`;
+
+          // 👉 Served KPI
+          const servedKPI = `
+    <div class="field-card" data-section="KPIMetrics">
       <label>Served KPI</label>
-      <input type="number" id="val-${fieldCounter}" oninput="updatePreview()">
+      <input type="number" oninput="updatePreview()">
+    </div>`;
 
-      <input type="hidden" id="name-${fieldCounter}" value="Served KPI">
-      <input type="hidden" id="type-${fieldCounter}" value="number">
+          if (approvalField) {
+            approvalField.insertAdjacentHTML("afterend", totalKPI + servedKPI);
+          } else {
+            kpiSection.insertAdjacentHTML("beforeend", totalKPI + servedKPI);
+          }
 
-    </div>
-  `;
 
-          document.getElementById("KPIMetrics").insertAdjacentHTML("afterbegin", html);
+          /* ================= FINANCIAL ================= */
+
+          const finSection = document.getElementById("FinancialDetails");
+
+          // 👉 find Attached Document
+          const attachField = Array.from(finSection.children).find(el =>
+            el.innerText.includes("Attached Document")
+          );
+
+          const allocated = `
+    <div class="field-card" data-section="FinancialDetails">
+      <label>Allocated Budget</label>
+      <input type="number" value="2500000" readonly style="background:#e9ecef;">
+    </div>`;
+
+          const utilized = `
+    <div class="field-card" data-section="FinancialDetails">
+      <label>Utilized Budget</label>
+      <input type="number" oninput="updatePreview()">
+    </div>`;
+
+          if (attachField) {
+            attachField.insertAdjacentHTML("beforebegin", allocated + utilized);
+          } else {
+            finSection.insertAdjacentHTML("beforeend", allocated + utilized);
+          }
         }
         window.onload = function () {
-            addServedKPIField();
+            addFixedFields();
           };
   </script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
