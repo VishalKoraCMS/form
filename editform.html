@@ -296,8 +296,9 @@
                 case "number":
                 case "date":
                     return `<input class="form-control form-control-sm"
-                value="${f.value || ''}"
-                onchange="updateField(${i}, this.value)">`;
+    value="${f.value || ''}"
+    ${f.readOnly ? 'readonly style="background:#e9ecef;"' : ''}
+    onchange="updateField(${i}, this.value)">`;
 
                 case "dropdown":
                     return `<select class="form-select form-select-sm"
@@ -361,7 +362,16 @@
                 grouped[f.section].push({ f, i });
             });
 
-            Object.keys(grouped).forEach(sec => {
+           const sectionOrder = [
+                "basicSection",
+                "FinancialDetails",
+                "KPIMetrics",
+                "Others"
+            ];
+
+            sectionOrder.forEach(sec => {
+                if (!grouped[sec]) return;
+
                 html += `
         <div class="preview-card">
             <div class="preview-header">${formatHeading(sec)}</div>
@@ -465,24 +475,86 @@
         ========================= */
        window.onload = function () {
             ensureServedKPI();   // ✅ add field
+             ensureFinancialFields();  
             renderUI();          // ✅ then render
         };
-    function ensureServedKPI() {
-        const exists = tempFormData.fields.some(
+   function ensureServedKPI() {
+
+        const hasServed = tempFormData.fields.some(
             f => f.name === "Served KPI" && f.section === "KPIMetrics"
         );
 
-        if (!exists) {
-            tempFormData.fields.unshift({
+        const hasTotal = tempFormData.fields.some(
+            f => f.name === "Total KPI" && f.section === "KPIMetrics"
+        );
+
+        const kpiIndex = tempFormData.fields.findIndex(
+            f => f.section === "KPIMetrics"
+        );
+
+        // 👉 Insert Total KPI (read-only)
+        if (!hasTotal) {
+            tempFormData.fields.splice(kpiIndex, 0, {
+                name: "Total KPI",
+                type: "number",
+                mandatory: false,
+                value: "100",
+                section: "KPIMetrics",
+                readOnly: true   // ⭐ important
+            });
+        }
+
+        // 👉 Insert Served KPI (below Total KPI)
+        if (!hasServed) {
+            tempFormData.fields.splice(kpiIndex + 1, 0, {
                 name: "Served KPI",
                 type: "number",
                 mandatory: false,
                 value: "50",
-                options: [],
                 section: "KPIMetrics"
             });
         }
     }
+    function ensureFinancialFields() {
+
+            const hasAllocated = tempFormData.fields.some(
+                f => f.name === "Allocated Budget" && f.section === "FinancialDetails"
+            );
+
+            const hasUtilized = tempFormData.fields.some(
+                f => f.name === "Utilized Budget" && f.section === "FinancialDetails"
+            );
+
+            // 👉 find index of "Attached Document" in FinancialDetails
+            const attachIndex = tempFormData.fields.findIndex(
+                f => f.section === "FinancialDetails" && f.name === "Attached Document"
+            );
+
+            if (attachIndex === -1) return; // safety
+
+            // 👉 insert Utilized first (so order stays correct after next insert)
+            if (!hasUtilized) {
+                tempFormData.fields.splice(attachIndex, 0, {
+                    name: "Utilized Budget",
+                    type: "number",
+                    mandatory: false,
+                    value: "0",
+                    section: "FinancialDetails"
+                });
+            }
+
+            // 👉 insert Allocated above Utilized
+            if (!hasAllocated) {
+                tempFormData.fields.splice(attachIndex, 0, {
+                    name: "Allocated Budget",
+                    type: "number",
+                    mandatory: false,
+                    value: "2500000",
+                    section: "FinancialDetails",
+                    readOnly: true   // ⭐ important
+                });
+            }
+        }
     </script>
 
 </body>
