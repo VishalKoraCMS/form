@@ -478,42 +478,39 @@
              ensureFinancialFields();  
             renderUI();          // ✅ then render
         };
-   function ensureServedKPI() {
+  function ensureServedKPI() {
 
-        const hasServed = tempFormData.fields.some(
-            f => f.name === "Served KPI" && f.section === "KPIMetrics"
+        // 👉 Remove existing KPI fields (if already added before)
+        tempFormData.fields = tempFormData.fields.filter(
+            f => !(f.section === "KPIMetrics" &&
+                (f.name === "Served KPI" || f.name === "Total KPI"))
         );
 
-        const hasTotal = tempFormData.fields.some(
-            f => f.name === "Total KPI" && f.section === "KPIMetrics"
+        // 👉 Find Approval Status index
+        const approvalIndex = tempFormData.fields.findIndex(
+            f => f.section === "KPIMetrics" && f.name === "Approval Status"
         );
 
-        const kpiIndex = tempFormData.fields.findIndex(
-            f => f.section === "KPIMetrics"
-        );
+        if (approvalIndex === -1) return;
 
-        // 👉 Insert Total KPI (read-only)
-        if (!hasTotal) {
-            tempFormData.fields.splice(kpiIndex, 0, {
+        // 👉 Insert in correct order
+        tempFormData.fields.splice(approvalIndex + 1, 0,
+            {
                 name: "Total KPI",
                 type: "number",
                 mandatory: false,
                 value: "100",
                 section: "KPIMetrics",
-                readOnly: true   // ⭐ important
-            });
-        }
-
-        // 👉 Insert Served KPI (below Total KPI)
-        if (!hasServed) {
-            tempFormData.fields.splice(kpiIndex + 1, 0, {
+                readOnly: true
+            },
+            {
                 name: "Served KPI",
                 type: "number",
                 mandatory: false,
                 value: "50",
                 section: "KPIMetrics"
-            });
-        }
+            }
+        );
     }
     function ensureFinancialFields() {
 
