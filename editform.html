@@ -463,8 +463,26 @@
         /* =========================
            INIT
         ========================= */
-        window.onload = renderUI;
+       window.onload = function () {
+            ensureServedKPI();   // ✅ add field
+            renderUI();          // ✅ then render
+        };
+    function ensureServedKPI() {
+        const exists = tempFormData.fields.some(
+            f => f.name === "Served KPI" && f.section === "KPIMetrics"
+        );
 
+        if (!exists) {
+            tempFormData.fields.unshift({
+                name: "Served KPI",
+                type: "number",
+                mandatory: false,
+                value: "50",
+                options: [],
+                section: "KPIMetrics"
+            });
+        }
+    }
     </script>
 
 </body>
