@@ -6,8 +6,8 @@
   <title>Scheme Form Builder</title>
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
-<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
   <style>
     body {
       background: linear-gradient(135deg, #eef2f7, #f8fafc);
@@ -79,11 +79,13 @@
       border-left: 4px solid #0d6efd;
       padding-left: 10px;
     }
-.basic-btn{
-   display: flex;
+
+    .basic-btn {
+      display: flex;
       justify-content: flex-end;
       margin-right: 18px;
-}
+    }
+
     .add-btn {
       display: flex;
       justify-content: flex-end;
@@ -134,8 +136,9 @@
       border-radius: 8px;
       padding: 6px 14px;
     }
+
     .btn-custom:hover {
-      border: 1px solid  #0d6efd;
+      border: 1px solid #0d6efd;
       color: #0d6efd;
     }
 
@@ -199,34 +202,35 @@
       gap: 10px;
       margin-top: 10px;
     }
+
     .pill-btn {
-  padding: 2px 10px;
-  font-size: 12px;
-  border-radius: 50px;
-  border: 1px solid #ccc;
-  background-color: #f8f9fa;
-  cursor: pointer;
-  transition: 0.2s;
-}
+      padding: 2px 10px;
+      font-size: 12px;
+      border-radius: 50px;
+      border: 1px solid #ccc;
+      background-color: #f8f9fa;
+      cursor: pointer;
+      transition: 0.2s;
+    }
 
-.pill-btn:hover {
-  background-color: #e2e6ea;
-}
+    .pill-btn:hover {
+      background-color: #e2e6ea;
+    }
 
-.pill-btn.primary {
-  border-color: #0d6efd;
-  color: #0d6efd;
-}
+    .pill-btn.primary {
+      border-color: #0d6efd;
+      color: #0d6efd;
+    }
 
-.pill-btn.secondary {
-  border-color: #6c757d;
-  color: #6c757d;
-}
-.choices__list--multiple .choices__item {
-    background-color: var(--choices-primary-color, #3d8bfd) !important;
-    border: 1px solid 
-color-mix(in srgb, var(--choices-primary-color, #0d6efd) 95%, var(--choices-darken, black)) !important;
-}
+    .pill-btn.secondary {
+      border-color: #6c757d;
+      color: #6c757d;
+    }
+
+    .choices__list--multiple .choices__item {
+      background-color: var(--choices-primary-color, #3d8bfd) !important;
+      border: 1px solid color-mix(in srgb, var(--choices-primary-color, #0d6efd) 95%, var(--choices-darken, black)) !important;
+    }
   </style>
 </head>
 
@@ -243,69 +247,69 @@ color-mix(in srgb, var(--choices-primary-color, #0d6efd) 95%, var(--choices-dark
         <label>Scheme Name</label>
         <input type="text" id="schemeName" oninput="updatePreview()">
 
-      <label>Scheme Description</label>
-      <textarea id="schemeDescription" rows="3" oninput="updatePreview()"
-        style="width:100%; padding:10px; border-radius:8px; border:1px solid #e5e7eb; background:#f9fafb;"></textarea>
+        <label>Scheme Description</label>
+        <textarea id="schemeDescription" rows="3" oninput="updatePreview()"
+          style="width:100%; padding:10px; border-radius:8px; border:1px solid #e5e7eb; background:#f9fafb;"></textarea>
 
-<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
 
-  <label style="margin:0;">State</label>
+          <label style="margin:0;">State</label>
 
-  <div style="display:flex; gap:6px;">
-    <button type="button" class="pill-btn primary" onclick="selectAllStates()">All</button>
-    <button type="button" class="pill-btn secondary" onclick="clearAllStates()">Clear</button>
-  </div>
+          <div style="display:flex; gap:6px;">
+            <button type="button" class="pill-btn primary" onclick="selectAllStates()">All</button>
+            <button type="button" class="pill-btn secondary" onclick="clearAllStates()">Clear</button>
+          </div>
 
-</div>
+        </div>
 
-  <select id="state" multiple>
-    <option value="Andhra Pradesh">Andhra Pradesh</option>
-    <option value="Arunachal Pradesh">Arunachal Pradesh</option>
-    <option value="Assam">Assam</option>
-    <option value="Bihar">Bihar</option>
-    <option value="Chhattisgarh">Chhattisgarh</option>
-    <option value="Goa">Goa</option>
-    <option value="Gujarat">Gujarat</option>
-    <option value="Haryana">Haryana</option>
-    <option value="Himachal Pradesh">Himachal Pradesh</option>
-    <option value="Jammu and Kashmir">Jammu and Kashmir</option>
-    <option value="Jharkhand">Jharkhand</option>
-    <option value="Karnataka">Karnataka</option>
-    <option value="Kerala">Kerala</option>
-    <option value="Madhya Pradesh">Madhya Pradesh</option>
-    <option value="Maharashtra">Maharashtra</option>
-    <option value="Manipur">Manipur</option>
-    <option value="Meghalaya">Meghalaya</option>
-    <option value="Mizoram">Mizoram</option>
-    <option value="Nagaland">Nagaland</option>
-    <option value="Odisha">Odisha</option>
-    <option value="Punjab">Punjab</option>
-    <option value="Rajasthan">Rajasthan</option>
-    <option value="Sikkim">Sikkim</option>
-    <option value="Tamil Nadu">Tamil Nadu</option>
-    <option value="Telangana">Telangana</option>
-    <option value="Tripura">Tripura</option>
-    <option value="Uttarakhand">Uttarakhand</option>
-    <option value="Uttar Pradesh">Uttar Pradesh</option>
-    <option value="West Bengal">West Bengal</option>
-    <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
-    <option value="Chandigarh">Chandigarh</option>
-    <option value="Dadra & Nagar Haveli and Daman & Diu">Dadra & Nagar Haveli and Daman & Diu</option>
-    <option value="Delhi">Delhi</option>
-    <option value="Lakshadweep">Lakshadweep</option>
-    <option value="Puducherry">Puducherry</option>
-    <option value="Ladakh">Ladakh</option>
-  </select>
+        <select id="state" multiple>
+          <option value="Andhra Pradesh">Andhra Pradesh</option>
+          <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+          <option value="Assam">Assam</option>
+          <option value="Bihar">Bihar</option>
+          <option value="Chhattisgarh">Chhattisgarh</option>
+          <option value="Goa">Goa</option>
+          <option value="Gujarat">Gujarat</option>
+          <option value="Haryana">Haryana</option>
+          <option value="Himachal Pradesh">Himachal Pradesh</option>
+          <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+          <option value="Jharkhand">Jharkhand</option>
+          <option value="Karnataka">Karnataka</option>
+          <option value="Kerala">Kerala</option>
+          <option value="Madhya Pradesh">Madhya Pradesh</option>
+          <option value="Maharashtra">Maharashtra</option>
+          <option value="Manipur">Manipur</option>
+          <option value="Meghalaya">Meghalaya</option>
+          <option value="Mizoram">Mizoram</option>
+          <option value="Nagaland">Nagaland</option>
+          <option value="Odisha">Odisha</option>
+          <option value="Punjab">Punjab</option>
+          <option value="Rajasthan">Rajasthan</option>
+          <option value="Sikkim">Sikkim</option>
+          <option value="Tamil Nadu">Tamil Nadu</option>
+          <option value="Telangana">Telangana</option>
+          <option value="Tripura">Tripura</option>
+          <option value="Uttarakhand">Uttarakhand</option>
+          <option value="Uttar Pradesh">Uttar Pradesh</option>
+          <option value="West Bengal">West Bengal</option>
+          <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
+          <option value="Chandigarh">Chandigarh</option>
+          <option value="Dadra & Nagar Haveli and Daman & Diu">Dadra & Nagar Haveli and Daman & Diu</option>
+          <option value="Delhi">Delhi</option>
+          <option value="Lakshadweep">Lakshadweep</option>
+          <option value="Puducherry">Puducherry</option>
+          <option value="Ladakh">Ladakh</option>
+        </select>
 
-      <label>Budget</label>
-      <input type="number" id="budget" oninput="updatePreview()">
+        <label>Budget</label>
+        <input type="number" id="budget" oninput="updatePreview()">
         <label>Ministry</label>
         <input type="text" id="ministry" oninput="updatePreview()">
 
         <label>Sector</label>
         <select id="sector" onchange="updatePreview()">
           <option value="">Select Sector</option>
-        
+
           <option value="967">ARI & Training</option>
           <option value="815">Agriculture</option>
           <option value="912">Alcohols & Derivatives</option>
@@ -591,13 +595,13 @@ color-mix(in srgb, var(--choices-primary-color, #0d6efd) 95%, var(--choices-dark
       document.querySelectorAll(".field-card").forEach(field => {
         const id = field.id.split('-')[1];
         const section = field.getAttribute("data-section");
-       const nameInput = document.getElementById(`name-${id}`);
+        const nameInput = document.getElementById(`name-${id}`);
         const name = nameInput ? nameInput.value : '';
 
         let value = '';
         const input = document.getElementById(`val-${id}`);
 
-    if (input && input.value !== undefined) {
+        if (input && input.value !== undefined) {
           if (input.type === "file") {
             value = input.files && input.files.length > 0
               ? input.files[0].name
@@ -641,146 +645,146 @@ color-mix(in srgb, var(--choices-primary-color, #0d6efd) 95%, var(--choices-dark
     }
 
     function saveDraft() {
-        var formData = {
-          schemeName: document.getElementById("schemeName").value,
-          schemeDescription: document.getElementById("schemeDescription").value,
-          state: stateChoice.getValue(true),
-          budget: document.getElementById("budget").value,
-          ministry: document.getElementById("ministry").value,
-          sector: document.getElementById("sector").value,
-          subSector: document.getElementById("subSector").value,
-          fields: []
-        };
+      var formData = {
+        schemeName: document.getElementById("schemeName").value,
+        schemeDescription: document.getElementById("schemeDescription").value,
+        state: stateChoice.getValue(true),
+        budget: document.getElementById("budget").value,
+        ministry: document.getElementById("ministry").value,
+        sector: document.getElementById("sector").value,
+        subSector: document.getElementById("subSector").value,
+        fields: []
+      };
 
-        var allFields = document.querySelectorAll(".field-card");
+      var allFields = document.querySelectorAll(".field-card");
 
-        allFields.forEach(function (field) {
-          var id = field.id.split('-')[1];
-          var value = '';
+      allFields.forEach(function (field) {
+        var id = field.id.split('-')[1];
+        var value = '';
 
-          // 🔹 get value
-          var input = document.getElementById("val-" + id);
+        // 🔹 get value
+        var input = document.getElementById("val-" + id);
 
-          if (input) {
-            if (input.type === "file") {
-              value = input.files && input.files.length > 0
-                ? input.files[0].name
-                : '';
-            } else {
-              value = input.value;
-            }
+        if (input) {
+          if (input.type === "file") {
+            value = input.files && input.files.length > 0
+              ? input.files[0].name
+              : '';
+          } else {
+            value = input.value;
           }
+        }
 
-          // radio
-          var radio = document.querySelector("input[name='val-" + id + "']:checked");
-          if (radio) value = radio.value;
+        // radio
+        var radio = document.querySelector("input[name='val-" + id + "']:checked");
+        if (radio) value = radio.value;
 
-          // checkbox
-          var checkboxes = document.querySelectorAll("#input-" + id + " input[type=checkbox]:checked");
-          if (checkboxes.length > 0) {
-            value = [];
-            checkboxes.forEach(function (c) {
-              value.push(c.value);
-            });
-          }
-
-          // 🔹 collect options
-          var options = [];
-          var optionInputs = document.querySelectorAll("#option-list-" + id + " input");
-          if (optionInputs.length > 0) {
-            optionInputs.forEach(function (opt) {
-              if (opt.value) {
-                options.push(opt.value);
-              }
-            });
-          }
-
-          formData.fields.push({
-            name: document.getElementById("name-" + id).value,
-            type: document.getElementById("type-" + id).value,
-            mandatory: document.getElementById("mandatory-" + id).checked,
-            value: value,
-            options: options, // ✅ important
-            section: field.getAttribute("data-section")
+        // checkbox
+        var checkboxes = document.querySelectorAll("#input-" + id + " input[type=checkbox]:checked");
+        if (checkboxes.length > 0) {
+          value = [];
+          checkboxes.forEach(function (c) {
+            value.push(c.value);
           });
+        }
+
+        // 🔹 collect options
+        var options = [];
+        var optionInputs = document.querySelectorAll("#option-list-" + id + " input");
+        if (optionInputs.length > 0) {
+          optionInputs.forEach(function (opt) {
+            if (opt.value) {
+              options.push(opt.value);
+            }
+          });
+        }
+
+        formData.fields.push({
+          name: document.getElementById("name-" + id).value,
+          type: document.getElementById("type-" + id).value,
+          mandatory: document.getElementById("mandatory-" + id).checked,
+          value: value,
+          options: options, // ✅ important
+          section: field.getAttribute("data-section")
         });
+      });
 
-        localStorage.setItem("schemeFormDraft", JSON.stringify(formData));
+      localStorage.setItem("schemeFormDraft", JSON.stringify(formData));
 
-        console.log("Saved:", formData);
-       alert("Scheme draft saved successfully 📝");
-      }
+      console.log("Saved:", formData);
+      alert("Scheme draft saved successfully 📝");
+    }
     function saveFinal() {
-        var formData = {
-          schemeName: document.getElementById("schemeName").value,
-          schemeDescription: document.getElementById("schemeDescription").value,
-          state: stateChoice.getValue(true),
-          budget: document.getElementById("budget").value,
-          ministry: document.getElementById("ministry").value,
-          sector: document.getElementById("sector").value,
-          subSector: document.getElementById("subSector").value,
-          fields: []
-        };
+      var formData = {
+        schemeName: document.getElementById("schemeName").value,
+        schemeDescription: document.getElementById("schemeDescription").value,
+        state: stateChoice.getValue(true),
+        budget: document.getElementById("budget").value,
+        ministry: document.getElementById("ministry").value,
+        sector: document.getElementById("sector").value,
+        subSector: document.getElementById("subSector").value,
+        fields: []
+      };
 
-        var allFields = document.querySelectorAll(".field-card");
+      var allFields = document.querySelectorAll(".field-card");
 
-        allFields.forEach(function (field) {
-          var id = field.id.split('-')[1];
-          var value = '';
+      allFields.forEach(function (field) {
+        var id = field.id.split('-')[1];
+        var value = '';
 
-          // 🔹 get value
-          var input = document.getElementById("val-" + id);
+        // 🔹 get value
+        var input = document.getElementById("val-" + id);
 
-          if (input) {
-            if (input.type === "file") {
-              value = input.files && input.files.length > 0
-                ? input.files[0].name
-                : '';
-            } else {
-              value = input.value;
-            }
+        if (input) {
+          if (input.type === "file") {
+            value = input.files && input.files.length > 0
+              ? input.files[0].name
+              : '';
+          } else {
+            value = input.value;
           }
+        }
 
-          // radio
-          var radio = document.querySelector("input[name='val-" + id + "']:checked");
-          if (radio) value = radio.value;
+        // radio
+        var radio = document.querySelector("input[name='val-" + id + "']:checked");
+        if (radio) value = radio.value;
 
-          // checkbox
-          var checkboxes = document.querySelectorAll("#input-" + id + " input[type=checkbox]:checked");
-          if (checkboxes.length > 0) {
-            value = [];
-            checkboxes.forEach(function (c) {
-              value.push(c.value);
-            });
-          }
-
-          // 🔹 collect options
-          var options = [];
-          var optionInputs = document.querySelectorAll("#option-list-" + id + " input");
-          if (optionInputs.length > 0) {
-            optionInputs.forEach(function (opt) {
-              if (opt.value) {
-                options.push(opt.value);
-              }
-            });
-          }
-
-          formData.fields.push({
-            name: document.getElementById("name-" + id).value,
-            type: document.getElementById("type-" + id).value,
-            mandatory: document.getElementById("mandatory-" + id).checked,
-            value: value,
-            options: options, // ✅ important
-            section: field.getAttribute("data-section")
+        // checkbox
+        var checkboxes = document.querySelectorAll("#input-" + id + " input[type=checkbox]:checked");
+        if (checkboxes.length > 0) {
+          value = [];
+          checkboxes.forEach(function (c) {
+            value.push(c.value);
           });
+        }
+
+        // 🔹 collect options
+        var options = [];
+        var optionInputs = document.querySelectorAll("#option-list-" + id + " input");
+        if (optionInputs.length > 0) {
+          optionInputs.forEach(function (opt) {
+            if (opt.value) {
+              options.push(opt.value);
+            }
+          });
+        }
+
+        formData.fields.push({
+          name: document.getElementById("name-" + id).value,
+          type: document.getElementById("type-" + id).value,
+          mandatory: document.getElementById("mandatory-" + id).checked,
+          value: value,
+          options: options, // ✅ important
+          section: field.getAttribute("data-section")
         });
+      });
 
-        localStorage.setItem("schemeFormDraft", JSON.stringify(formData));
+      localStorage.setItem("schemeFormDraft", JSON.stringify(formData));
 
-        console.log("Saved:", formData);
-        alert("Scheme submitted to selected states successfully ✅");
-         window.location.href = "https://www.figma.com/proto/eIUrGhDQoOaGgburEGwHlT/SMG?node-id=291-5533&t=aRX6xEC4PNxRmAis-0&scaling=scale-down-width&content-scaling=fixed&starting-point-node-id=61%3A2&page-id=0%3A1&hide-ui=1"; // 👈 change this to your page
-      }
+      console.log("Saved:", formData);
+      alert("Scheme submitted to selected states successfully ✅");
+      window.location.href = "https://www.figma.com/proto/eIUrGhDQoOaGgburEGwHlT/SMG?node-id=291-5533&t=aRX6xEC4PNxRmAis-0&scaling=scale-down-width&content-scaling=fixed&starting-point-node-id=61%3A2&page-id=0%3A1&hide-ui=1"; // 👈 change this to your page
+    }
     function openPreview() {
       updatePreview(); // generate latest preview
 
@@ -788,47 +792,60 @@ color-mix(in srgb, var(--choices-primary-color, #0d6efd) 95%, var(--choices-dark
       modal.show();
     }
     const stateChoice = new Choices('#state', {
-        removeItemButton: true,
-        searchEnabled: true,
-      });
+      removeItemButton: true,
+      searchEnabled: true,
+    });
 
-      // Select All
-      function selectAllStates() {
-        const allValues = Array.from(document.querySelectorAll('#state option'))
-          .map(opt => opt.value);
+    // Select All
+    function selectAllStates() {
+      const allValues = Array.from(document.querySelectorAll('#state option'))
+        .map(opt => opt.value);
 
-        stateChoice.setChoiceByValue(allValues);
-      }
+      stateChoice.setChoiceByValue(allValues);
+    }
 
-      // Clear All
-      function clearAllStates() {
-        stateChoice.removeActiveItems();
-      }
-      
-       function addFixedFields() {
+    // Clear All
+    function clearAllStates() {
+      stateChoice.removeActiveItems();
+    }
 
-          /* ================= KPI ================= */
+    function addFixedFields() {
 
-          const kpiSection = document.getElementById("KPIMetrics");
+      /* ================= KPI ================= */
 
-          // 👉 find Approval Status field
-          const approvalField = Array.from(kpiSection.children).find(el =>
-            el.innerText.includes("Approval Status")
-          );
-
-          // 👉 Total KPI
-       fieldCounter++;
-         const totalKPI = `
+      const kpiSection = document.getElementById("KPIMetrics");
+      fieldCounter++;
+      const kpiQuarter = `
 <div class="field-card" data-section="KPIMetrics" id="field-${fieldCounter}">
-  <label>Total KPI</label>
-  <input type="number" id="val-${fieldCounter}" value="100" readonly style="background:#e9ecef;">
-  <input type="hidden" id="name-${fieldCounter}" value="Total KPI">
-  <input type="hidden" id="type-${fieldCounter}" value="number">
+  <label>Quarter</label>
+  <select id="val-${fieldCounter}" onchange="updatePreview()">
+    <option value="">Select Quarter</option>
+    <option value="Q1">Q1</option>
+    <option value="Q2">Q2</option>
+    <option value="Q3">Q3</option>
+    <option value="Q4">Q4</option>
+  </select>
+  <input type="hidden" id="name-${fieldCounter}" value="Quarter">
+  <input type="hidden" id="type-${fieldCounter}" value="dropdown">
 </div>`;
+      // 👉 find Approval Status field
+      const approvalField = Array.from(kpiSection.children).find(el =>
+        el.innerText.includes("Approval Status")
+      );
 
-          // 👉 Served KPI
-   fieldCounter++;
-         const servedKPI = `
+      // 👉 Total KPI
+      fieldCounter++;
+      const totalKPI = `
+          <div class="field-card" data-section="KPIMetrics" id="field-${fieldCounter}">
+            <label>Total KPI</label>
+            <input type="number" id="val-${fieldCounter}" value="100" readonly style="background:#e9ecef;">
+            <input type="hidden" id="name-${fieldCounter}" value="Total KPI">
+            <input type="hidden" id="type-${fieldCounter}" value="number">
+          </div>`;
+
+      // 👉 Served KPI
+      fieldCounter++;
+      const servedKPI = `
 <div class="field-card" data-section="KPIMetrics" id="field-${fieldCounter}">
   <label>Served KPI</label>
   <input type="number" id="val-${fieldCounter}" oninput="updatePreview()">
@@ -836,24 +853,38 @@ color-mix(in srgb, var(--choices-primary-color, #0d6efd) 95%, var(--choices-dark
   <input type="hidden" id="type-${fieldCounter}" value="number">
 </div>`;
 
-          if (approvalField) {
-            approvalField.insertAdjacentHTML("afterend", totalKPI + servedKPI);
-          } else {
-            kpiSection.insertAdjacentHTML("beforeend", totalKPI + servedKPI);
-          }
+      if (approvalField) {
+        approvalField.insertAdjacentHTML("afterend", totalKPI + servedKPI);
+      } else {
+      kpiSection.insertAdjacentHTML("beforeend", kpiQuarter + totalKPI + servedKPI);
+      }
 
 
-          /* ================= FINANCIAL ================= */
+      /* ================= FINANCIAL ================= */
 
-          const finSection = document.getElementById("FinancialDetails");
+      const finSection = document.getElementById("FinancialDetails");
+      fieldCounter++;
+      const finQuarter = `
+<div class="field-card" data-section="FinancialDetails" id="field-${fieldCounter}">
+  <label>Quarter</label>
+  <select id="val-${fieldCounter}" onchange="updatePreview()">
+    <option value="">Select Quarter</option>
+    <option value="Q1">Q1</option>
+    <option value="Q2">Q2</option>
+    <option value="Q3">Q3</option>
+    <option value="Q4">Q4</option>
+  </select>
+  <input type="hidden" id="name-${fieldCounter}" value="Quarter">
+  <input type="hidden" id="type-${fieldCounter}" value="dropdown">
+</div>`;
 
-          // 👉 find Attached Document
-          const attachField = Array.from(finSection.children).find(el =>
-            el.innerText.includes("Attached Document")
-          );
+      // 👉 find Attached Document
+      const attachField = Array.from(finSection.children).find(el =>
+        el.innerText.includes("Attached Document")
+      );
 
-   fieldCounter++;
-         const allocated = `
+      fieldCounter++;
+      const allocated = `
 <div class="field-card" data-section="FinancialDetails" id="field-${fieldCounter}">
   <label>Allocated Budget</label>
   <input type="number" id="val-${fieldCounter}" value="2500000" readonly style="background:#e9ecef;">
@@ -861,8 +892,8 @@ color-mix(in srgb, var(--choices-primary-color, #0d6efd) 95%, var(--choices-dark
   <input type="hidden" id="type-${fieldCounter}" value="number">
 </div>`;
 
-         fieldCounter++;
-         const utilized = `
+      fieldCounter++;
+      const utilized = `
 <div class="field-card" data-section="FinancialDetails" id="field-${fieldCounter}">
   <label>Utilized Budget</label>
   <input type="number" id="val-${fieldCounter}" oninput="updatePreview()">
@@ -870,15 +901,15 @@ color-mix(in srgb, var(--choices-primary-color, #0d6efd) 95%, var(--choices-dark
   <input type="hidden" id="type-${fieldCounter}" value="number">
 </div>`;
 
-          if (attachField) {
-            attachField.insertAdjacentHTML("beforebegin", allocated + utilized);
-          } else {
-            finSection.insertAdjacentHTML("beforeend", allocated + utilized);
-          }
-        }
-        window.onload = function () {
-            addFixedFields();
-          };
+      if (attachField) {
+        attachField.insertAdjacentHTML("beforebegin", allocated + utilized);
+      } else {
+      finSection.insertAdjacentHTML("beforeend", finQuarter + allocated + utilized);
+      }
+    }
+    window.onload = function () {
+      addFixedFields();
+    };
   </script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <!-- PREVIEW MODAL -->
