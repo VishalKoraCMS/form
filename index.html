@@ -26,8 +26,8 @@
       }
 
       .preview-value table {
-  font-size: 13px;
-}
+        font-size: 13px;
+      }
       .panel {
         background: #fff;
         padding: 22px;
@@ -271,15 +271,29 @@
             "
           ></textarea>
 
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-          <label style="margin:0;">States</label>
-        </div>
-        
-        <div id="stateDetailsContainer" class="mt-2"></div>
-        
-        <div style="display:flex; justify-content:flex-end; margin-top:8px;">
-          <button type="button" class="pill-btn primary" onclick="addStateRow()">+ Add State</button>
-        </div>
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+            "
+          >
+            <label style="margin: 0">States</label>
+          </div>
+
+          <div id="stateDetailsContainer" class="mt-2"></div>
+
+          <div
+            style="display: flex; justify-content: flex-end; margin-top: 8px"
+          >
+            <button
+              type="button"
+              class="pill-btn primary"
+              onclick="addStateRow()"
+            >
+              + Add State
+            </button>
+          </div>
           <label>Budget</label>
           <input type="number" id="budget" oninput="updatePreview()" />
           <label>Ministry</label>
@@ -540,15 +554,15 @@
 
         updatePreview();
       }
-  function updatePreview() {
-    const preview = document.getElementById("previewContainer");
+      function updatePreview() {
+        const preview = document.getElementById("previewContainer");
 
-    /* ================= STATE TABLE ================= */
-   let stateHTML = '';
-    const rows = document.querySelectorAll('[id^="state-row-"]');
+        /* ================= STATE TABLE ================= */
+        let stateHTML = "";
+        const rows = document.querySelectorAll('[id^="state-row-"]');
 
-    if (rows.length > 0) {
-      stateHTML += `
+        if (rows.length > 0) {
+          stateHTML += `
     <div class="preview-card">
       <div class="preview-header">State-wise Details</div>
 
@@ -563,34 +577,35 @@
             </tr>
   `;
 
-      rows.forEach(row => {
-        const id = row.id.split('-')[2];
+          rows.forEach((row) => {
+            const id = row.id.split("-")[2];
 
-        const name = document.getElementById(`state-${id}`)?.value || '-';
-        const budgetVal = document.getElementById(`budget-${id}`)?.value || '-';
-        const kpiVal = document.getElementById(`kpi-${id}`)?.value || '-';
+            const name = document.getElementById(`state-${id}`)?.value || "-";
+            const budgetVal =
+              document.getElementById(`budget-${id}`)?.value || "-";
+            const kpiVal = document.getElementById(`kpi-${id}`)?.value || "-";
 
-        if (!name && !budgetVal && !kpiVal) return;
+            if (!name && !budgetVal && !kpiVal) return;
 
-        stateHTML += `
+            stateHTML += `
       <tr>
         <td style="padding:6px; border:1px solid #ddd;">${name}</td>
         <td style="padding:6px; border:1px solid #ddd;">${budgetVal}</td>
         <td style="padding:6px; border:1px solid #ddd;">${kpiVal}</td>
       </tr>
     `;
-      });
+          });
 
-      stateHTML += `
+          stateHTML += `
           </table>
         </div>
       </div>
     </div>
   `;
-    }
+        }
 
-    /* ================= BASIC DETAILS ================= */
-    let basicHTML = `
+        /* ================= BASIC DETAILS ================= */
+        let basicHTML = `
     <div class="preview-card">
       <div class="preview-header">Basic Details</div>
 
@@ -626,70 +641,85 @@
     </div>
   `;
 
-    /* ================= DYNAMIC FIELDS ================= */
-    let grouped = {
-      FinancialDetails: '',
-      KPIMetrics: '',
-      Others: '',
-      basicSection: ''
-    };
+        /* ================= DYNAMIC FIELDS ================= */
+        let grouped = {
+          FinancialDetails: "",
+          KPIMetrics: "",
+          Others: "",
+          basicSection: "",
+        };
 
-    document.querySelectorAll(".field-card").forEach(field => {
-      const id = field.id.split('-')[1];
-      const section = field.getAttribute("data-section");
+        document.querySelectorAll(".field-card").forEach((field) => {
+          const id = field.id.split("-")[1];
+          const section = field.getAttribute("data-section");
 
-      // skip state rows (important fix)
-      if (field.id.startsWith("state-row")) return;
+          // skip state rows (important fix)
+          if (field.id.startsWith("state-row")) return;
 
-      const nameInput = document.getElementById(`name-${id}`);
-      const name = nameInput ? nameInput.value : '';
+          const nameInput = document.getElementById(`name-${id}`);
+          const name = nameInput ? nameInput.value : "";
 
-      let value = '';
-      const input = document.getElementById(`val-${id}`);
+          let value = "";
+          const input = document.getElementById(`val-${id}`);
 
-      if (input && input.value !== undefined) {
-        if (input.type === "file") {
-          value = input.files && input.files.length > 0
-            ? input.files[0].name
-            : '';
-        } else {
-          value = input.value || '';
-        }
-      }
+          if (input && input.value !== undefined) {
+            if (input.type === "file") {
+              value =
+                input.files && input.files.length > 0
+                  ? input.files[0].name
+                  : "";
+            } else {
+              value = input.value || "";
+            }
+          }
 
-      const radio = document.querySelector(`input[name="val-${id}"]:checked`);
-      if (radio) value = radio.value;
+          const radio = document.querySelector(
+            `input[name="val-${id}"]:checked`,
+          );
+          if (radio) value = radio.value;
 
-      const checkboxes = document.querySelectorAll(`#input-${id} input[type=checkbox]:checked`);
-      if (checkboxes.length) {
-        value = Array.from(checkboxes).map(c => c.value).join(', ');
-      }
+          const checkboxes = document.querySelectorAll(
+            `#input-${id} input[type=checkbox]:checked`,
+          );
+          if (checkboxes.length) {
+            value = Array.from(checkboxes)
+              .map((c) => c.value)
+              .join(", ");
+          }
 
-      if (name) {
-        grouped[section] += `
+          if (name) {
+            grouped[section] += `
         <div class="preview-row">
           <div class="preview-label">${name}</div>
-          <div class="preview-value">${value || '-'}</div>
+          <div class="preview-value">${value || "-"}</div>
         </div>
       `;
-      }
-    });
+          }
+        });
 
-    /* ================= FINAL RENDER ================= */
-    preview.innerHTML = basicHTML + stateHTML;
+        /* ================= FINAL RENDER ================= */
+        preview.innerHTML = basicHTML + stateHTML;
 
-    for (let key in grouped) {
-      if (grouped[key]) {
-        preview.innerHTML += `
-        <div class="preview-card">
-          <div class="preview-header">${formatHeading(key)}</div>
-          ${grouped[key]}
-        </div>
-      `;
+        // ✅ FIXED ORDER
+        const orderedSections = [
+          "basicSection",
+          "FinancialDetails",
+          "KPIMetrics",
+          "Others",
+        ];
+
+        orderedSections.forEach((key) => {
+          if (grouped[key]) {
+            preview.innerHTML += `
+      <div class="preview-card">
+        <div class="preview-header">${formatHeading(key)}</div>
+        ${grouped[key]}
+      </div>
+    `;
+          }
+        });
       }
-    }
-  }
-     
+
       function saveDraft() {
         const stateDetails = [];
 
@@ -703,14 +733,14 @@
           fields: [],
         };
 
-        document.querySelectorAll('[id^="state-row-"]').forEach(row => {
-          const id = row.id.split('-')[2];
+        document.querySelectorAll('[id^="state-row-"]').forEach((row) => {
+          const id = row.id.split("-")[2];
 
-       if (document.getElementById(`state-${id}`)?.value) {
+          if (document.getElementById(`state-${id}`)?.value) {
             stateDetails.push({
               name: document.getElementById(`state-${id}`).value,
-              budget: document.getElementById(`budget-${id}`)?.value || '',
-              kpi: document.getElementById(`kpi-${id}`)?.value || ''
+              budget: document.getElementById(`budget-${id}`)?.value || "",
+              kpi: document.getElementById(`kpi-${id}`)?.value || "",
             });
           }
         });
@@ -785,14 +815,14 @@
       function saveFinal() {
         const stateDetails = [];
 
-        document.querySelectorAll('[id^="state-row-"]').forEach(row => {
-          const id = row.id.split('-')[2];
+        document.querySelectorAll('[id^="state-row-"]').forEach((row) => {
+          const id = row.id.split("-")[2];
 
-        if (document.getElementById(`state-${id}`)?.value) {
+          if (document.getElementById(`state-${id}`)?.value) {
             stateDetails.push({
               name: document.getElementById(`state-${id}`).value,
-              budget: document.getElementById(`budget-${id}`)?.value || '',
-              kpi: document.getElementById(`kpi-${id}`)?.value || ''
+              budget: document.getElementById(`budget-${id}`)?.value || "",
+              kpi: document.getElementById(`kpi-${id}`)?.value || "",
             });
           }
         });
@@ -809,10 +839,20 @@
         var allFields = document.querySelectorAll(".field-card");
 
         allFields.forEach(function (field) {
+
+          // ❌ skip state rows
+          if (field.id.startsWith("state-row")) return;
+
           var id = field.id.split("-")[1];
+
+          const nameEl = document.getElementById("name-" + id);
+          const typeEl = document.getElementById("type-" + id);
+
+          // ❌ skip if missing (fix crash)
+          if (!nameEl || !typeEl) return;
+
           var value = "";
 
-          // 🔹 get value
           var input = document.getElementById("val-" + id);
 
           if (input) {
@@ -822,19 +862,19 @@
                   ? input.files[0].name
                   : "";
             } else {
-              value = input.value;
+              value = input.value || "";
             }
           }
 
           // radio
           var radio = document.querySelector(
-            "input[name='val-" + id + "']:checked",
+            "input[name='val-" + id + "']:checked"
           );
           if (radio) value = radio.value;
 
           // checkbox
           var checkboxes = document.querySelectorAll(
-            "#input-" + id + " input[type=checkbox]:checked",
+            "#input-" + id + " input[type=checkbox]:checked"
           );
           if (checkboxes.length > 0) {
             value = [];
@@ -843,26 +883,24 @@
             });
           }
 
-          // 🔹 collect options
+          // options
           var options = [];
           var optionInputs = document.querySelectorAll(
-            "#option-list-" + id + " input",
+            "#option-list-" + id + " input"
           );
           if (optionInputs.length > 0) {
             optionInputs.forEach(function (opt) {
-              if (opt.value) {
-                options.push(opt.value);
-              }
+              if (opt.value) options.push(opt.value);
             });
           }
 
           formData.fields.push({
-            name: document.getElementById("name-" + id).value,
-            type: document.getElementById("type-" + id).value,
+            name: nameEl.value,
+            type: typeEl.value,
             mandatory:
               document.getElementById("mandatory-" + id)?.checked || false,
             value: value,
-            options: options, // ✅ important
+            options: options,
             section: field.getAttribute("data-section"),
           });
         });
@@ -882,10 +920,6 @@
         );
         modal.show();
       }
-     
-     
-    
-
 
       function addFixedFields() {
         /* ================= KPI ================= */
@@ -991,38 +1025,68 @@
       }
       window.onload = function () {
         addFixedFields();
-         addStateRow(true);
+        addStateRow(true);
       };
-  
 
-        function getStateOptions(selected = "") {
-          const states = [
-            "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", "Goa",
-            "Gujarat", "Haryana", "Himachal Pradesh", "Jammu and Kashmir", "Jharkhand",
-            "Karnataka", "Kerala", "Madhya Pradesh", "Maharashtra", "Manipur", "Meghalaya",
-            "Mizoram", "Nagaland", "Odisha", "Punjab", "Rajasthan", "Sikkim", "Tamil Nadu",
-            "Telangana", "Tripura", "Uttarakhand", "Uttar Pradesh", "West Bengal",
-            "Andaman and Nicobar Islands", "Chandigarh",
-            "Dadra & Nagar Haveli and Daman & Diu", "Delhi", "Lakshadweep",
-            "Puducherry", "Ladakh"
-          ];
+      function getStateOptions(selected = "") {
+        const states = [
+          "Andhra Pradesh",
+          "Arunachal Pradesh",
+          "Assam",
+          "Bihar",
+          "Chhattisgarh",
+          "Goa",
+          "Gujarat",
+          "Haryana",
+          "Himachal Pradesh",
+          "Jammu and Kashmir",
+          "Jharkhand",
+          "Karnataka",
+          "Kerala",
+          "Madhya Pradesh",
+          "Maharashtra",
+          "Manipur",
+          "Meghalaya",
+          "Mizoram",
+          "Nagaland",
+          "Odisha",
+          "Punjab",
+          "Rajasthan",
+          "Sikkim",
+          "Tamil Nadu",
+          "Telangana",
+          "Tripura",
+          "Uttarakhand",
+          "Uttar Pradesh",
+          "West Bengal",
+          "Andaman and Nicobar Islands",
+          "Chandigarh",
+          "Dadra & Nagar Haveli and Daman & Diu",
+          "Delhi",
+          "Lakshadweep",
+          "Puducherry",
+          "Ladakh",
+        ];
 
-          return states.map(s =>
-            `<option value="${s}" ${s === selected ? "selected" : ""}>${s}</option>`
-          ).join("");
-        }
+        return states
+          .map(
+            (s) =>
+              `<option value="${s}" ${s === selected ? "selected" : ""}>${s}</option>`,
+          )
+          .join("");
+      }
 
-       function addStateRow(isFirst = false) {
-          stateRowCounter++;
+      function addStateRow(isFirst = false) {
+        stateRowCounter++;
 
-          const container = document.getElementById("stateDetailsContainer");
+        const container = document.getElementById("stateDetailsContainer");
 
-          const row = document.createElement("div");
-          row.className = "field-card";
-          row.id = `state-row-${stateRowCounter}`;
+        const row = document.createElement("div");
+        row.className = "field-card";
+        row.id = `state-row-${stateRowCounter}`;
 
-          row.innerHTML = `
-              ${!isFirst ? `<span class="remove-btn" onclick="removeStateRow(${stateRowCounter})">✖</span>` : ''}
+        row.innerHTML = `
+              ${!isFirst ? `<span class="remove-btn" onclick="removeStateRow(${stateRowCounter})">✖</span>` : ""}
 
               <div style="display:flex; gap:10px; flex-wrap:wrap;">
                 
@@ -1047,13 +1111,13 @@
               </div>
             `;
 
-          container.appendChild(row);
-        }
+        container.appendChild(row);
+      }
 
-        function removeStateRow(id) {
-          document.getElementById(`state-row-${id}`)?.remove();
-          updatePreview();
-        }
+      function removeStateRow(id) {
+        document.getElementById(`state-row-${id}`)?.remove();
+        updatePreview();
+      }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <!-- PREVIEW MODAL -->
