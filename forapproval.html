@@ -422,81 +422,105 @@
         // window.location.href = "https://www.figma.com/proto/eIUrGhDQoOaGgburEGwHlT/SMG?node-id=291-5533&t=aRX6xEC4PNxRmAis-0&scaling=scale-down-width&content-scaling=fixed&starting-point-node-id=61%3A2&page-id=0%3A1&hide-ui=1"; // 👈 change this to your page
       }
       function ensureAllFields() {
-        /* ================= KPI ================= */
 
-        // 👉 remove old KPI fields if already present (important)
-        formData.fields = formData.fields.filter(
-          (f) =>
-            !(
-              f.section === "KPIMetrics" &&
-              (f.name === "Served KPI" || f.name === "Total KPI")
-            ),
-        );
+            /* ================= KPI ================= */
 
-        // 👉 find Approval Status index
-        const approvalIndex = formData.fields.findIndex(
-          (f) => f.section === "KPIMetrics" && f.name === "Approval Status",
-        );
+            // remove only calculated KPI fields
+            formData.fields = formData.fields.filter(
+                f => !(f.section === "KPIMetrics" &&
+                    (f.name === "Served KPI" || f.name === "Total KPI"))
+            );
 
-        if (approvalIndex !== -1) {
-          formData.fields.splice(
-            approvalIndex + 1,
-            0,
-            {
-              name: "Total KPI",
-              type: "number",
-              value: "100",
-              section: "KPIMetrics",
-              isHighLight: false,
-            },
-            {
-              name: "Served KPI",
-              type: "number",
-              value: "50",
-              section: "KPIMetrics",
-              isHighLight: true,
-            },
-          );
+            const approvalIndex = formData.fields.findIndex(
+                f => f.section === "KPIMetrics" && f.name === "Approval Status"
+            );
+
+            if (approvalIndex !== -1) {
+
+                // 👉 check if Quarter already exists
+                const hasQuarterKPI = formData.fields.some(
+                    f => f.name === "Quarter" && f.section === "KPIMetrics"
+                );
+
+                let insertItems = [];
+
+                if (!hasQuarterKPI) {
+                    insertItems.push({
+                        name: "Quarter",
+                        type: "text",
+                        value: "Q2",
+                        section: "KPIMetrics"
+                    });
+                }
+
+                insertItems.push(
+                    {
+                        name: "Total KPI",
+                        type: "number",
+                        value: "100",
+                        section: "KPIMetrics"
+                    },
+                    {
+                        name: "Served KPI",
+                        type: "number",
+                        value: "50",
+                        section: "KPIMetrics",
+                        isHighLight: true
+                    }
+                );
+
+                formData.fields.splice(approvalIndex + 1, 0, ...insertItems);
+            }
+
+
+            /* ================= FINANCIAL ================= */
+
+            // remove only calculated financial fields
+            formData.fields = formData.fields.filter(
+                f => !(f.section === "FinancialDetails" &&
+                    (f.name === "Allocated Budget" || f.name === "Utilized Budget"))
+            );
+
+            const attachIndex = formData.fields.findIndex(
+                f => f.section === "FinancialDetails" && f.name === "Attached Document"
+            );
+
+            if (attachIndex !== -1) {
+
+                const hasQuarterFinancial = formData.fields.some(
+                    f => f.name === "Quarter" && f.section === "FinancialDetails"
+                );
+
+                let insertItems = [];
+
+                if (!hasQuarterFinancial) {
+                    insertItems.push({
+                        name: "Quarter",
+                        type: "text",
+                        value: "Q1",
+                        section: "FinancialDetails"
+                    });
+                }
+
+                insertItems.push(
+                    {
+                        name: "Allocated Budget",
+                        type: "number",
+                        value: "2500000",
+                        section: "FinancialDetails"
+                    },
+                    {
+                        name: "Utilized Budget",
+                        type: "number",
+                        value: "1000000",
+                        section: "FinancialDetails",
+                        isHighLight: true
+                    }
+                );
+
+                formData.fields.splice(attachIndex, 0, ...insertItems);
+            }
         }
-
-        /* ================= FINANCIAL ================= */
-
-        // 👉 remove old financial fields if exist
-        formData.fields = formData.fields.filter(
-          (f) =>
-            !(
-              f.section === "FinancialDetails" &&
-              (f.name === "Allocated Budget" || f.name === "Utilized Budget")
-            ),
-        );
-
-        // 👉 find Attached Document index
-        const attachIndex = formData.fields.findIndex(
-          (f) =>
-            f.section === "FinancialDetails" && f.name === "Attached Document",
-        );
-
-        if (attachIndex !== -1) {
-          formData.fields.splice(
-            attachIndex,
-            0,
-            {
-              name: "Allocated Budget",
-              type: "number",
-              value: "2500000",
-              section: "FinancialDetails",
-              isHighLight: false,
-            },
-            {
-              name: "Utilized Budget",
-              type: "number",
-              value: "1000000",
-              section: "FinancialDetails",
-              isHighLight: true,
-            },
-          );
-        }
-      }
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
