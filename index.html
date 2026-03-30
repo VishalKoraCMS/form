@@ -1,436 +1,427 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Scheme Form Builder</title>
 
-<head>
-  <meta charset="UTF-8">
-  <title>Scheme Form Builder</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+    <style>
+      body {
+        background: linear-gradient(135deg, #eef2f7, #f8fafc);
+        font-family: "Segoe UI", sans-serif;
+        color: #1f2937;
+      }
 
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
-  <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
-  <style>
-    body {
-      background: linear-gradient(135deg, #eef2f7, #f8fafc);
-      font-family: "Segoe UI", sans-serif;
-      color: #1f2937;
-    }
+      .layout {
+        display: block;
+        gap: 24px;
+      }
 
-    .layout {
-      display: block;
-      gap: 24px;
-    }
+      .preview-value table {
+  font-size: 13px;
+}
+      .panel {
+        background: #fff;
+        padding: 22px;
+        border-radius: 12px;
+        border: 1px solid #e5e7eb;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+        width: 60%;
+        max-height: 92vh;
+        overflow-y: auto;
+      }
 
-    .panel {
-      background: #fff;
-      padding: 22px;
-      border-radius: 12px;
-      border: 1px solid #e5e7eb;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
-      width: 60%;
-      max-height: 92vh;
-      overflow-y: auto;
-    }
+      h2 {
+        font-size: 20px;
+        margin-bottom: 18px;
+      }
 
-    h2 {
-      font-size: 20px;
-      margin-bottom: 18px;
-    }
+      h3 {
+        font-size: 16px;
+        margin-bottom: 8px;
+      }
 
-    h3 {
-      font-size: 16px;
-      margin-bottom: 8px;
-    }
+      label {
+        font-size: 13px;
+        margin-top: 12px;
+        color: #6b7280;
+      }
 
-    label {
-      font-size: 13px;
-      margin-top: 12px;
-      color: #6b7280;
-    }
+      input,
+      select {
+        width: 100%;
+        padding: 10px;
+        border-radius: 8px;
+        border: 1px solid #e5e7eb;
+        background: #f9fafb;
+        margin-top: 6px;
+      }
 
-    input,
-    select {
-      width: 100%;
-      padding: 10px;
-      border-radius: 8px;
-      border: 1px solid #e5e7eb;
-      background: #f9fafb;
-      margin-top: 6px;
-    }
+      input:focus,
+      select:focus {
+        background: #fff;
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+        outline: none;
+      }
 
-    input:focus,
-    select:focus {
-      background: #fff;
-      border-color: #0d6efd;
-      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
-      outline: none;
-    }
+      .section-box {
+        border: 1px solid #e5e7eb;
+        border-radius: 10px;
+        padding: 16px;
+        margin-top: 20px;
+        background: #fff;
+      }
 
-    .section-box {
-      border: 1px solid #e5e7eb;
-      border-radius: 10px;
-      padding: 16px;
-      margin-top: 20px;
-      background: #fff;
-    }
+      .section-title {
+        font-weight: 600;
+        margin-bottom: 10px;
+        border-left: 4px solid #0d6efd;
+        padding-left: 10px;
+      }
 
-    .section-title {
-      font-weight: 600;
-      margin-bottom: 10px;
-      border-left: 4px solid #0d6efd;
-      padding-left: 10px;
-    }
+      .basic-btn {
+        display: flex;
+        justify-content: flex-end;
+        margin-right: 18px;
+      }
 
-    .basic-btn {
-      display: flex;
-      justify-content: flex-end;
-      margin-right: 18px;
-    }
+      .add-btn {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 10px;
+      }
 
-    .add-btn {
-      display: flex;
-      justify-content: flex-end;
-      margin-top: 10px;
-    }
+      .field-card {
+        border: 1px solid #e5e7eb;
+        padding: 14px;
+        margin-top: 12px;
+        border-radius: 8px;
+        background: #f9fafb;
+        position: relative;
+      }
 
-    .field-card {
-      border: 1px solid #e5e7eb;
-      padding: 14px;
-      margin-top: 12px;
-      border-radius: 8px;
-      background: #f9fafb;
-      position: relative;
-    }
+      .remove-btn {
+        position: absolute;
+        right: 10px;
+        top: 8px;
+        cursor: pointer;
+        color: #9ca3af;
+      }
 
-    .remove-btn {
-      position: absolute;
-      right: 10px;
-      top: 8px;
-      cursor: pointer;
-      color: #9ca3af;
-    }
+      /* CUSTOM CHECKBOX */
+      .custom-check {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 10px;
+      }
 
-    /* CUSTOM CHECKBOX */
-    .custom-check {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-top: 10px;
-    }
+      .custom-check input {
+        width: 16px;
+        height: 16px;
+        cursor: pointer;
+        accent-color: #0d6efd;
+      }
 
-    .custom-check input {
-      width: 16px;
-      height: 16px;
-      cursor: pointer;
-      accent-color: #0d6efd;
-    }
+      .custom-check label {
+        margin: 0;
+        font-size: 13px;
+        cursor: pointer;
+      }
 
-    .custom-check label {
-      margin: 0;
-      font-size: 13px;
-      cursor: pointer;
-    }
+      .btn-custom {
+        background: #0d6efd;
+        color: #fff;
+        border-radius: 8px;
+        padding: 6px 14px;
+      }
 
-    .btn-custom {
-      background: #0d6efd;
-      color: #fff;
-      border-radius: 8px;
-      padding: 6px 14px;
-    }
+      .btn-custom:hover {
+        border: 1px solid #0d6efd;
+        color: #0d6efd;
+      }
 
-    .btn-custom:hover {
-      border: 1px solid #0d6efd;
-      color: #0d6efd;
-    }
+      .btn-draft {
+        background: #e5e7eb;
+        color: #374151;
+      }
 
-    .btn-draft {
-      background: #e5e7eb;
-      color: #374151;
-    }
+      .btn-save {
+        background: #111827;
+        color: #fff;
+      }
 
-    .btn-save {
-      background: #111827;
-      color: #fff;
-    }
+      .preview-section {
+        border: 1px solid #e5e7eb;
+        padding: 12px;
+        border-radius: 8px;
+        background: #f9fafb;
+        margin-bottom: 12px;
+      }
 
-    .preview-section {
-      border: 1px solid #e5e7eb;
-      padding: 12px;
-      border-radius: 8px;
-      background: #f9fafb;
-      margin-bottom: 12px;
-    }
+      .preview-card {
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        overflow: hidden;
+        margin-bottom: 16px;
+        background: #fff;
+      }
 
-    .preview-card {
-      border: 1px solid #d1d5db;
-      border-radius: 6px;
-      overflow: hidden;
-      margin-bottom: 16px;
-      background: #fff;
-    }
+      .preview-header {
+        background: #f3f4f6;
+        padding: 10px 14px;
+        font-weight: 600;
+        font-size: 14px;
+        border-bottom: 1px solid #d1d5db;
+      }
 
-    .preview-header {
-      background: #f3f4f6;
-      padding: 10px 14px;
-      font-weight: 600;
-      font-size: 14px;
-      border-bottom: 1px solid #d1d5db;
-    }
+      .preview-row {
+        display: flex;
+        border-bottom: 1px solid #e5e7eb;
+      }
 
-    .preview-row {
-      display: flex;
-      border-bottom: 1px solid #e5e7eb;
-    }
+      .preview-row:last-child {
+        border-bottom: none;
+      }
 
-    .preview-row:last-child {
-      border-bottom: none;
-    }
+      .preview-label {
+        width: 40%;
+        padding: 10px 14px;
+        background: #f9fafb;
+        font-weight: 500;
+      }
 
-    .preview-label {
-      width: 40%;
-      padding: 10px 14px;
-      background: #f9fafb;
-      font-weight: 500;
-    }
+      .preview-value {
+        width: 60%;
+        padding: 10px 14px;
+      }
 
-    .preview-value {
-      width: 60%;
-      padding: 10px 14px;
-    }
+      .action-buttons {
+        display: none;
+        gap: 10px;
+        margin-top: 10px;
+      }
 
-    .action-buttons {
-      display: none;
-      gap: 10px;
-      margin-top: 10px;
-    }
+      .pill-btn {
+        padding: 2px 10px;
+        font-size: 12px;
+        border-radius: 50px;
+        border: 1px solid #ccc;
+        background-color: #f8f9fa;
+        cursor: pointer;
+        transition: 0.2s;
+      }
 
-    .pill-btn {
-      padding: 2px 10px;
-      font-size: 12px;
-      border-radius: 50px;
-      border: 1px solid #ccc;
-      background-color: #f8f9fa;
-      cursor: pointer;
-      transition: 0.2s;
-    }
+      .pill-btn:hover {
+        background-color: #e2e6ea;
+      }
 
-    .pill-btn:hover {
-      background-color: #e2e6ea;
-    }
+      .pill-btn.primary {
+        border-color: #0d6efd;
+        color: #0d6efd;
+      }
 
-    .pill-btn.primary {
-      border-color: #0d6efd;
-      color: #0d6efd;
-    }
+      .pill-btn.secondary {
+        border-color: #6c757d;
+        color: #6c757d;
+      }
 
-    .pill-btn.secondary {
-      border-color: #6c757d;
-      color: #6c757d;
-    }
+      .choices__list--multiple .choices__item {
+        background-color: var(--choices-primary-color, #3d8bfd) !important;
+        border: 1px solid
+          color-mix(
+            in srgb,
+            var(--choices-primary-color, #0d6efd) 95%,
+            var(--choices-darken, black)
+          ) !important;
+      }
+    </style>
+  </head>
 
-    .choices__list--multiple .choices__item {
-      background-color: var(--choices-primary-color, #3d8bfd) !important;
-      border: 1px solid color-mix(in srgb, var(--choices-primary-color, #0d6efd) 95%, var(--choices-darken, black)) !important;
-    }
-  </style>
-</head>
+  <body>
+    <div class="container-fluid py-3 d-flex justify-content-center">
+      <div class="layout d-flex justify-content-center">
+        <!-- FORM -->
+        <div class="panel mb-3">
+          <h2>Basic Details</h2>
 
-<body>
+          <label>Scheme Name</label>
+          <input type="text" id="schemeName" oninput="updatePreview()" />
 
-  <div class="container-fluid py-3 d-flex justify-content-center">
-    <div class="layout  d-flex justify-content-center ">
+          <label>Scheme Description</label>
+          <textarea
+            id="schemeDescription"
+            rows="3"
+            oninput="updatePreview()"
+            style="
+              width: 100%;
+              padding: 10px;
+              border-radius: 8px;
+              border: 1px solid #e5e7eb;
+              background: #f9fafb;
+            "
+          ></textarea>
 
-      <!-- FORM -->
-      <div class="panel mb-3">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <label style="margin:0;">States</label>
+        </div>
+        
+        <div id="stateDetailsContainer" class="mt-2"></div>
+        
+        <div style="display:flex; justify-content:flex-end; margin-top:8px;">
+          <button type="button" class="pill-btn primary" onclick="addStateRow()">+ Add State</button>
+        </div>
+          <label>Budget</label>
+          <input type="number" id="budget" oninput="updatePreview()" />
+          <label>Ministry</label>
+          <input type="text" id="ministry" oninput="updatePreview()" />
 
-        <h2>Basic Details</h2>
+          <label>Sector</label>
+          <select id="sector" onchange="updatePreview()">
+            <option value="">Select Sector</option>
 
-        <label>Scheme Name</label>
-        <input type="text" id="schemeName" oninput="updatePreview()">
+            <option value="967">ARI & Training</option>
+            <option value="815">Agriculture</option>
+            <option value="912">Alcohols & Derivatives</option>
+            <option value="1004">Ammonia Energy</option>
+            <option value="966">Animal Husbandry</option>
+            <option value="942">Apparels & Garments</option>
+            <option value="842">Auto Components</option>
+            <option value="841">Auto Manufacturing</option>
+            <option value="840">Automobile</option>
+            <option value="885">Aviation & Aviation Infrastructure</option>
+            <option value="837">Bio-Power Energy</option>
+            <option value="946">BioTech</option>
+            <option value="951">Cement</option>
+            <option value="911">Chemicals</option>
+            <option value="844">Coal</option>
+            <option value="890">Commercial</option>
+            <option value="970">Culture</option>
+            <option value="922">Data Centers</option>
+            <option value="920">Defense Production</option>
+            <option value="947">Education</option>
+            <option value="930">Electronics</option>
+            <option value="908">Exploration & Production</option>
+            <option value="816">Fertilizers & Pesticides</option>
+            <option value="811">Food Processing</option>
+            <option value="949">Gems and Jewellery</option>
+            <option value="979">Health & Medical Education</option>
+            <option value="927">Healthcare</option>
+            <option value="939">Heavy Machinery & Equipment</option>
+            <option value="981">Hospitality</option>
+            <option value="982">Housing & Urban Development</option>
+            <option value="828">Hydro Energy</option>
+            <option value="1003">Hydrogen Energy</option>
+            <option value="921">IT/ITES</option>
+            <option value="962">Industrial Corridor</option>
+            <option value="983">Industries and Commerce</option>
+            <option value="818">Irrigation</option>
+            <option value="988">Labour & Employment</option>
+            <option value="993">Land & Revenue</option>
+            <option value="944">Leather</option>
+            <option value="855">Logistic Parks</option>
+            <option value="814">Meat & Poultry</option>
+            <option value="952">Metro</option>
+            <option value="843">Mining</option>
+            <option value="835">Nuclear Energy</option>
+            <option value="907">Oil & Gas</option>
+            <option value="1008">Other</option>
+            <option value="919">Paints & Dyes</option>
+            <option value="917">Paper & Paper Products</option>
+            <option value="914">Petrochemicals</option>
+            <option value="945">Pharmaceuticals</option>
+            <option value="916">Plastics & Plastic Products</option>
+            <option value="825">Power Generation</option>
+            <option value="839">Power Transmission & Distribution</option>
+            <option value="953">Public Works</option>
+            <option value="879">Railways</option>
+            <option value="889">Real Estate</option>
+            <option value="955">Refinery</option>
+            <option value="971">Rehabilitation and Reconstruction</option>
+            <option value="903">Residential</option>
+            <option value="940">Retail Chains & Shops</option>
+            <option value="872">Roads & Highways</option>
+            <option value="918">Rubber & Rubber Products</option>
+            <option value="994">Rural Development</option>
+            <option value="997">School Education</option>
+            <option value="995">Science and Technology</option>
+            <option value="882">Shipping</option>
+            <option value="996">Skill Development</option>
+            <option value="913">Soaps, Detergents & Cosmetics</option>
+            <option value="998">Social Welfare</option>
+            <option value="924">Software & Smart Solutions</option>
+            <option value="834">Solar Energy</option>
+            <option value="948">Space</option>
+            <option value="1002">Sports/Youth Affairs</option>
+            <option value="950">Steel</option>
+            <option value="926">Telecommunication</option>
+            <option value="941">Textiles</option>
+            <option value="826">Thermal Energy</option>
+            <option value="836">Tidal Energy</option>
+            <option value="857">Tourism, Hospitality & Wellness</option>
+            <option value="909">Transportation & Storage / Pipelines</option>
+            <option value="1001">Tribal Affairs</option>
+            <option value="856">Warehouse / Cold Chain</option>
+            <option value="931">Waste & Water</option>
+            <option value="932">Water Collection, treatment and supply</option>
+            <option value="963">White Goods</option>
+            <option value="831">Wind Energy</option>
+            <option value="943">Yarns & Fabrics</option>
+          </select>
+          <label>Sub Sector</label>
+          <select id="subSector" onchange="updatePreview()">
+            <option value="">Select Sub Sector</option>
+            <option value="S1">S1</option>
+            <option value="S2">S2</option>
+            <option value="S3">S3</option>
+            <option value="S4">S4</option>
+            <option value="S5">S5</option>
+          </select>
+          <div id="basicSection"></div>
 
-        <label>Scheme Description</label>
-        <textarea id="schemeDescription" rows="3" oninput="updatePreview()"
-          style="width:100%; padding:10px; border-radius:8px; border:1px solid #e5e7eb; background:#f9fafb;"></textarea>
-
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-
-          <label style="margin:0;">State</label>
-
-          <div style="display:flex; gap:6px;">
-            <button type="button" class="pill-btn primary" onclick="selectAllStates()">All</button>
-            <button type="button" class="pill-btn secondary" onclick="clearAllStates()">Clear</button>
+          <div class="basic-btn d-flex justify-content-end mt-2">
+            <button
+              class="btn btn-primary btn-sm"
+              onclick="addField('basicSection')"
+            >
+              ➕ Add Field
+            </button>
           </div>
 
-        </div>
-
-        <select id="state" multiple>
-          <option value="Andhra Pradesh">Andhra Pradesh</option>
-          <option value="Arunachal Pradesh">Arunachal Pradesh</option>
-          <option value="Assam">Assam</option>
-          <option value="Bihar">Bihar</option>
-          <option value="Chhattisgarh">Chhattisgarh</option>
-          <option value="Goa">Goa</option>
-          <option value="Gujarat">Gujarat</option>
-          <option value="Haryana">Haryana</option>
-          <option value="Himachal Pradesh">Himachal Pradesh</option>
-          <option value="Jammu and Kashmir">Jammu and Kashmir</option>
-          <option value="Jharkhand">Jharkhand</option>
-          <option value="Karnataka">Karnataka</option>
-          <option value="Kerala">Kerala</option>
-          <option value="Madhya Pradesh">Madhya Pradesh</option>
-          <option value="Maharashtra">Maharashtra</option>
-          <option value="Manipur">Manipur</option>
-          <option value="Meghalaya">Meghalaya</option>
-          <option value="Mizoram">Mizoram</option>
-          <option value="Nagaland">Nagaland</option>
-          <option value="Odisha">Odisha</option>
-          <option value="Punjab">Punjab</option>
-          <option value="Rajasthan">Rajasthan</option>
-          <option value="Sikkim">Sikkim</option>
-          <option value="Tamil Nadu">Tamil Nadu</option>
-          <option value="Telangana">Telangana</option>
-          <option value="Tripura">Tripura</option>
-          <option value="Uttarakhand">Uttarakhand</option>
-          <option value="Uttar Pradesh">Uttar Pradesh</option>
-          <option value="West Bengal">West Bengal</option>
-          <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
-          <option value="Chandigarh">Chandigarh</option>
-          <option value="Dadra & Nagar Haveli and Daman & Diu">Dadra & Nagar Haveli and Daman & Diu</option>
-          <option value="Delhi">Delhi</option>
-          <option value="Lakshadweep">Lakshadweep</option>
-          <option value="Puducherry">Puducherry</option>
-          <option value="Ladakh">Ladakh</option>
-        </select>
-
-        <label>Budget</label>
-        <input type="number" id="budget" oninput="updatePreview()">
-        <label>Ministry</label>
-        <input type="text" id="ministry" oninput="updatePreview()">
-
-        <label>Sector</label>
-        <select id="sector" onchange="updatePreview()">
-          <option value="">Select Sector</option>
-
-          <option value="967">ARI & Training</option>
-          <option value="815">Agriculture</option>
-          <option value="912">Alcohols & Derivatives</option>
-          <option value="1004">Ammonia Energy</option>
-          <option value="966">Animal Husbandry</option>
-          <option value="942">Apparels & Garments</option>
-          <option value="842">Auto Components</option>
-          <option value="841">Auto Manufacturing</option>
-          <option value="840">Automobile</option>
-          <option value="885">Aviation & Aviation Infrastructure</option>
-          <option value="837">Bio-Power Energy</option>
-          <option value="946">BioTech</option>
-          <option value="951">Cement</option>
-          <option value="911">Chemicals</option>
-          <option value="844">Coal</option>
-          <option value="890">Commercial</option>
-          <option value="970">Culture</option>
-          <option value="922">Data Centers</option>
-          <option value="920">Defense Production</option>
-          <option value="947">Education</option>
-          <option value="930">Electronics</option>
-          <option value="908">Exploration & Production</option>
-          <option value="816">Fertilizers & Pesticides</option>
-          <option value="811">Food Processing</option>
-          <option value="949">Gems and Jewellery</option>
-          <option value="979">Health & Medical Education</option>
-          <option value="927">Healthcare</option>
-          <option value="939">Heavy Machinery & Equipment</option>
-          <option value="981">Hospitality</option>
-          <option value="982">Housing & Urban Development</option>
-          <option value="828">Hydro Energy</option>
-          <option value="1003">Hydrogen Energy</option>
-          <option value="921">IT/ITES</option>
-          <option value="962">Industrial Corridor</option>
-          <option value="983">Industries and Commerce</option>
-          <option value="818">Irrigation</option>
-          <option value="988">Labour & Employment</option>
-          <option value="993">Land & Revenue</option>
-          <option value="944">Leather</option>
-          <option value="855">Logistic Parks</option>
-          <option value="814">Meat & Poultry</option>
-          <option value="952">Metro</option>
-          <option value="843">Mining</option>
-          <option value="835">Nuclear Energy</option>
-          <option value="907">Oil & Gas</option>
-          <option value="1008">Other</option>
-          <option value="919">Paints & Dyes</option>
-          <option value="917">Paper & Paper Products</option>
-          <option value="914">Petrochemicals</option>
-          <option value="945">Pharmaceuticals</option>
-          <option value="916">Plastics & Plastic Products</option>
-          <option value="825">Power Generation</option>
-          <option value="839">Power Transmission & Distribution</option>
-          <option value="953">Public Works</option>
-          <option value="879">Railways</option>
-          <option value="889">Real Estate</option>
-          <option value="955">Refinery</option>
-          <option value="971">Rehabilitation and Reconstruction</option>
-          <option value="903">Residential</option>
-          <option value="940">Retail Chains & Shops</option>
-          <option value="872">Roads & Highways</option>
-          <option value="918">Rubber & Rubber Products</option>
-          <option value="994">Rural Development</option>
-          <option value="997">School Education</option>
-          <option value="995">Science and Technology</option>
-          <option value="882">Shipping</option>
-          <option value="996">Skill Development</option>
-          <option value="913">Soaps, Detergents & Cosmetics</option>
-          <option value="998">Social Welfare</option>
-          <option value="924">Software & Smart Solutions</option>
-          <option value="834">Solar Energy</option>
-          <option value="948">Space</option>
-          <option value="1002">Sports/Youth Affairs</option>
-          <option value="950">Steel</option>
-          <option value="926">Telecommunication</option>
-          <option value="941">Textiles</option>
-          <option value="826">Thermal Energy</option>
-          <option value="836">Tidal Energy</option>
-          <option value="857">Tourism, Hospitality & Wellness</option>
-          <option value="909">Transportation & Storage / Pipelines</option>
-          <option value="1001">Tribal Affairs</option>
-          <option value="856">Warehouse / Cold Chain</option>
-          <option value="931">Waste & Water</option>
-          <option value="932">Water Collection, treatment and supply</option>
-          <option value="963">White Goods</option>
-          <option value="831">Wind Energy</option>
-          <option value="943">Yarns & Fabrics</option>
-        </select>
-        <label>Sub Sector</label>
-        <select id="subSector" onchange="updatePreview()">
-          <option value="">Select Sub Sector</option>
-          <option value="S1">S1</option>
-          <option value="S2">S2</option>
-          <option value="S3">S3</option>
-          <option value="S4">S4</option>
-          <option value="S5">S5</option>
-        </select>
-        <div id="basicSection"></div>
-
-        <div class="basic-btn d-flex justify-content-end mt-2">
-          <button class="btn btn-primary btn-sm" onclick="addField('basicSection')">➕ Add Field</button>
-        </div>
-
-        <div id="sections"></div>
-        <div class="d-flex justify-content-center gap-2 mt-3">
-          <button class="btn btn-secondary btn-sm" onclick="saveDraft()">Save as Draft</button>
-          <button class="btn btn-primary btn-sm" onclick="openPreview()">Preview</button>
+          <div id="sections"></div>
+          <div class="d-flex justify-content-center gap-2 mt-3">
+            <button class="btn btn-secondary btn-sm" onclick="saveDraft()">
+              Save as Draft
+            </button>
+            <button class="btn btn-primary btn-sm" onclick="openPreview()">
+              Preview
+            </button>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <script>
-    const sectionNames = ["Financial Details", "KPI Metrics", "Others"];
-    let fieldCounter = 0;
-    const sectionsDiv = document.getElementById("sections");
+    <script>
+      var stateRowCounter = 0;
+      const sectionNames = ["Financial Details", "KPI Metrics", "Others"];
+      let fieldCounter = 0;
+      const sectionsDiv = document.getElementById("sections");
 
-    sectionNames.forEach(section => {
-      const id = section.replace(/\s/g, "");
+      sectionNames.forEach((section) => {
+        const id = section.replace(/\s/g, "");
 
-      sectionsDiv.insertAdjacentHTML("beforeend", `
+        sectionsDiv.insertAdjacentHTML(
+          "beforeend",
+          `
     <div class="section-box">
       <div class="section-title">${section}</div>
       <div id="${id}"></div>
@@ -438,13 +429,14 @@
         <button class="btn btn-primary btn-sm" onclick="addField('${id}')">➕ Add Field</button>
       </div>
     </div>
-  `);
-    });
+  `,
+        );
+      });
 
-    function addField(sectionId) {
-      fieldCounter++;
+      function addField(sectionId) {
+        fieldCounter++;
 
-      const html = `
+        const html = `
     <div class="field-card" data-section="${sectionId}" id="field-${fieldCounter}">
       <span class="remove-btn" onclick="this.parentElement.remove(); updatePreview()">✖</span>
 
@@ -472,350 +464,435 @@
     </div>
   `;
 
-      document.getElementById(sectionId).insertAdjacentHTML("beforeend", html);
-      renderInput(fieldCounter);
-    }
-
-    function formatHeading(text) {
-      return text.replace(/([A-Z])/g, ' $1').replace(/^./, s => s.toUpperCase());
-    }
-
-    function renderInput(id) {
-      const type = document.getElementById(`type-${id}`).value;
-      const valueDiv = document.getElementById(`value-${id}`);
-      const optionsDiv = document.getElementById(`options-${id}`);
-      const nameInput = document.getElementById(`name-${id}`);
-
-
-      optionsDiv.style.display = "none";
-      if (type === 'file') {
-        nameInput.value = "Attached Document";
+        document
+          .getElementById(sectionId)
+          .insertAdjacentHTML("beforeend", html);
+        renderInput(fieldCounter);
       }
-      if (type === 'text' || type === 'number' || type === 'date') {
-        valueDiv.innerHTML = `<input type="${type}" id="val-${id}" oninput="updatePreview()">`;
-      } else if (type === 'file') {
-        valueDiv.innerHTML = `<input type="file" id="val-${id}" onchange="updatePreview()">`;
-      } else {
-        valueDiv.innerHTML = `<div id="input-${id}"></div>`;
-        optionsDiv.style.display = "block";
-        optionsDiv.innerHTML = `
+
+      function formatHeading(text) {
+        return text
+          .replace(/([A-Z])/g, " $1")
+          .replace(/^./, (s) => s.toUpperCase());
+      }
+
+      function renderInput(id) {
+        const type = document.getElementById(`type-${id}`).value;
+        const valueDiv = document.getElementById(`value-${id}`);
+        const optionsDiv = document.getElementById(`options-${id}`);
+        const nameInput = document.getElementById(`name-${id}`);
+
+        optionsDiv.style.display = "none";
+        if (type === "file") {
+          nameInput.value = "Attached Document";
+        }
+        if (type === "text" || type === "number" || type === "date") {
+          valueDiv.innerHTML = `<input type="${type}" id="val-${id}" oninput="updatePreview()">`;
+        } else if (type === "file") {
+          valueDiv.innerHTML = `<input type="file" id="val-${id}" onchange="updatePreview()">`;
+        } else {
+          valueDiv.innerHTML = `<div id="input-${id}"></div>`;
+          optionsDiv.style.display = "block";
+          optionsDiv.innerHTML = `
       <label>Options</label>
       <div id="option-list-${id}"></div>
       <button class="btn btn-primary btn-sm mt-1" onclick="addOption(${id})">Add Option</button>
     `;
+        }
+
+        updatePreview();
       }
 
-      updatePreview();
-    }
+      function addOption(id) {
+        document
+          .getElementById(`option-list-${id}`)
+          .insertAdjacentHTML(
+            "beforeend",
+            `<input type="text" placeholder="Option" oninput="updateOptions(${id})">`,
+          );
+      }
 
-    function addOption(id) {
-      document.getElementById(`option-list-${id}`).insertAdjacentHTML("beforeend",
-        `<input type="text" placeholder="Option" oninput="updateOptions(${id})">`
-      );
-    }
+      function updateOptions(id) {
+        const type = document.getElementById(`type-${id}`).value;
+        const inputs = document.querySelectorAll(`#option-list-${id} input`);
+        const container = document.getElementById(`input-${id}`);
 
-    function updateOptions(id) {
-      const type = document.getElementById(`type-${id}`).value;
-      const inputs = document.querySelectorAll(`#option-list-${id} input`);
-      const container = document.getElementById(`input-${id}`);
+        container.innerHTML = "";
 
-      container.innerHTML = '';
-
-      inputs.forEach(input => {
-        if (input.value) {
-          if (type === 'dropdown') {
-            container.innerHTML += `<option>${input.value}</option>`;
-          } else {
-            container.innerHTML += `
+        inputs.forEach((input) => {
+          if (input.value) {
+            if (type === "dropdown") {
+              container.innerHTML += `<option>${input.value}</option>`;
+            } else {
+              container.innerHTML += `
           <div class="custom-check">
             <input type="${type}" name="val-${id}" value="${input.value}" onchange="updatePreview()">
             <label>${input.value}</label>
           </div>
         `;
+            }
           }
+        });
+
+        if (type === "dropdown") {
+          container.innerHTML = `<select id="val-${id}" oninput="updatePreview()">${container.innerHTML}</select>`;
         }
+
+        updatePreview();
+      }
+  function updatePreview() {
+    const preview = document.getElementById("previewContainer");
+
+    /* ================= STATE TABLE ================= */
+   let stateHTML = '';
+    const rows = document.querySelectorAll('[id^="state-row-"]');
+
+    if (rows.length > 0) {
+      stateHTML += `
+    <div class="preview-card">
+      <div class="preview-header">State-wise Details</div>
+
+      <div class="preview-row">
+        <div class="preview-label">States</div>
+        <div class="preview-value">
+          <table style="width:100%; border-collapse:collapse;">
+            <tr style="background:#f3f4f6;">
+              <th style="padding:6px; border:1px solid #ddd;">State</th>
+              <th style="padding:6px; border:1px solid #ddd;">Budget</th>
+              <th style="padding:6px; border:1px solid #ddd;">KPI</th>
+            </tr>
+  `;
+
+      rows.forEach(row => {
+        const id = row.id.split('-')[2];
+
+        const name = document.getElementById(`state-${id}`)?.value || '-';
+        const budgetVal = document.getElementById(`budget-${id}`)?.value || '-';
+        const kpiVal = document.getElementById(`kpi-${id}`)?.value || '-';
+
+        if (!name && !budgetVal && !kpiVal) return;
+
+        stateHTML += `
+      <tr>
+        <td style="padding:6px; border:1px solid #ddd;">${name}</td>
+        <td style="padding:6px; border:1px solid #ddd;">${budgetVal}</td>
+        <td style="padding:6px; border:1px solid #ddd;">${kpiVal}</td>
+      </tr>
+    `;
       });
 
-      if (type === 'dropdown') {
-        container.innerHTML = `<select id="val-${id}" oninput="updatePreview()">${container.innerHTML}</select>`;
-      }
-
-      updatePreview();
+      stateHTML += `
+          </table>
+        </div>
+      </div>
+    </div>
+  `;
     }
 
-    function updatePreview() {
-      const preview = document.getElementById("previewContainer");
-      const selectedStates = stateChoice.getValue(true).join(', ') || '-';
-      // BASIC DETAILS
-      let basicHTML = `
+    /* ================= BASIC DETAILS ================= */
+    let basicHTML = `
     <div class="preview-card">
       <div class="preview-header">Basic Details</div>
 
       <div class="preview-row">
         <div class="preview-label">Scheme Name</div>
-        <div class="preview-value">${schemeName.value || '-'}</div>
+        <div class="preview-value">${schemeName.value || "-"}</div>
       </div>
-    <div class="preview-row">
-      <div class="preview-label">Scheme Description</div>
-      <div class="preview-value">${schemeDescription.value || '-'}</div>
-    </div>
 
-    <div class="preview-row">
-      <div class="preview-label">State</div>
-      <div class="preview-value">${selectedStates}</div>
-    </div>
+      <div class="preview-row">
+        <div class="preview-label">Scheme Description</div>
+        <div class="preview-value">${schemeDescription.value || "-"}</div>
+      </div>
 
-    <div class="preview-row">
-      <div class="preview-label">Budget</div>
-      <div class="preview-value">${budget.value || '-'}</div>
-    </div>
+      <div class="preview-row">
+        <div class="preview-label">Budget</div>
+        <div class="preview-value">${budget.value || "-"}</div>
+      </div>
+
       <div class="preview-row">
         <div class="preview-label">Ministry</div>
-        <div class="preview-value">${ministry.value || '-'}</div>
+        <div class="preview-value">${ministry.value || "-"}</div>
       </div>
 
       <div class="preview-row">
         <div class="preview-label">Sector</div>
-        <div class="preview-value">${sector.selectedIndex >= 0 ? sector.options[sector.selectedIndex].text : '-'}</div>
+        <div class="preview-value">${sector.selectedIndex >= 0 ? sector.options[sector.selectedIndex].text : "-"}</div>
       </div>
-          <div class="preview-row">
-      <div class="preview-label">Sub Sector</div>
-      <div class="preview-value">${subSector.selectedIndex >= 0 ? subSector.options[subSector.selectedIndex].text : '-'}</div>
-    </div>
+
+      <div class="preview-row">
+        <div class="preview-label">Sub Sector</div>
+        <div class="preview-value">${subSector.selectedIndex >= 0 ? subSector.options[subSector.selectedIndex].text : "-"}</div>
+      </div>
     </div>
   `;
 
-      let grouped = {
-        FinancialDetails: '',
-        KPIMetrics: '',
-        Others: '',
-        basicSection: ''
-      };
+    /* ================= DYNAMIC FIELDS ================= */
+    let grouped = {
+      FinancialDetails: '',
+      KPIMetrics: '',
+      Others: '',
+      basicSection: ''
+    };
 
-      document.querySelectorAll(".field-card").forEach(field => {
-        const id = field.id.split('-')[1];
-        const section = field.getAttribute("data-section");
-        const nameInput = document.getElementById(`name-${id}`);
-        const name = nameInput ? nameInput.value : '';
+    document.querySelectorAll(".field-card").forEach(field => {
+      const id = field.id.split('-')[1];
+      const section = field.getAttribute("data-section");
 
-        let value = '';
-        const input = document.getElementById(`val-${id}`);
+      // skip state rows (important fix)
+      if (field.id.startsWith("state-row")) return;
 
-        if (input && input.value !== undefined) {
-          if (input.type === "file") {
-            value = input.files && input.files.length > 0
-              ? input.files[0].name
-              : '';
-          } else {
-            value = input.value || '';
-          }
+      const nameInput = document.getElementById(`name-${id}`);
+      const name = nameInput ? nameInput.value : '';
+
+      let value = '';
+      const input = document.getElementById(`val-${id}`);
+
+      if (input && input.value !== undefined) {
+        if (input.type === "file") {
+          value = input.files && input.files.length > 0
+            ? input.files[0].name
+            : '';
+        } else {
+          value = input.value || '';
         }
+      }
 
-        const radio = document.querySelector(`input[name="val-${id}"]:checked`);
-        if (radio) value = radio.value;
+      const radio = document.querySelector(`input[name="val-${id}"]:checked`);
+      if (radio) value = radio.value;
 
-        const checkboxes = document.querySelectorAll(`#input-${id} input[type=checkbox]:checked`);
-        if (checkboxes.length) {
-          value = Array.from(checkboxes).map(c => c.value).join(', ');
-        }
+      const checkboxes = document.querySelectorAll(`#input-${id} input[type=checkbox]:checked`);
+      if (checkboxes.length) {
+        value = Array.from(checkboxes).map(c => c.value).join(', ');
+      }
 
-        if (name) {
-          grouped[section] += `
+      if (name) {
+        grouped[section] += `
         <div class="preview-row">
           <div class="preview-label">${name}</div>
           <div class="preview-value">${value || '-'}</div>
         </div>
       `;
-        }
-      });
+      }
+    });
 
-      preview.innerHTML = basicHTML;
+    /* ================= FINAL RENDER ================= */
+    preview.innerHTML = basicHTML + stateHTML;
 
-      for (let key in grouped) {
-        if (grouped[key]) {
-          preview.innerHTML += `
+    for (let key in grouped) {
+      if (grouped[key]) {
+        preview.innerHTML += `
         <div class="preview-card">
           <div class="preview-header">${formatHeading(key)}</div>
           ${grouped[key]}
         </div>
       `;
-        }
       }
-
     }
+  }
+     
+      function saveDraft() {
+        const stateDetails = [];
 
-    function saveDraft() {
-      var formData = {
-        schemeName: document.getElementById("schemeName").value,
-        schemeDescription: document.getElementById("schemeDescription").value,
-        state: stateChoice.getValue(true),
-        budget: document.getElementById("budget").value,
-        ministry: document.getElementById("ministry").value,
-        sector: document.getElementById("sector").value,
-        subSector: document.getElementById("subSector").value,
-        fields: []
-      };
+        var formData = {
+          schemeName: document.getElementById("schemeName").value,
+          schemeDescription: document.getElementById("schemeDescription").value,
+          budget: document.getElementById("budget").value,
+          ministry: document.getElementById("ministry").value,
+          sector: document.getElementById("sector").value,
+          subSector: document.getElementById("subSector").value,
+          fields: [],
+        };
 
-      var allFields = document.querySelectorAll(".field-card");
+        document.querySelectorAll('[id^="state-row-"]').forEach(row => {
+          const id = row.id.split('-')[2];
 
-      allFields.forEach(function (field) {
-        var id = field.id.split('-')[1];
-        var value = '';
-
-        // 🔹 get value
-        var input = document.getElementById("val-" + id);
-
-        if (input) {
-          if (input.type === "file") {
-            value = input.files && input.files.length > 0
-              ? input.files[0].name
-              : '';
-          } else {
-            value = input.value;
+       if (document.getElementById(`state-${id}`)?.value) {
+            stateDetails.push({
+              name: document.getElementById(`state-${id}`).value,
+              budget: document.getElementById(`budget-${id}`)?.value || '',
+              kpi: document.getElementById(`kpi-${id}`)?.value || ''
+            });
           }
-        }
-
-        // radio
-        var radio = document.querySelector("input[name='val-" + id + "']:checked");
-        if (radio) value = radio.value;
-
-        // checkbox
-        var checkboxes = document.querySelectorAll("#input-" + id + " input[type=checkbox]:checked");
-        if (checkboxes.length > 0) {
-          value = [];
-          checkboxes.forEach(function (c) {
-            value.push(c.value);
-          });
-        }
-
-        // 🔹 collect options
-        var options = [];
-        var optionInputs = document.querySelectorAll("#option-list-" + id + " input");
-        if (optionInputs.length > 0) {
-          optionInputs.forEach(function (opt) {
-            if (opt.value) {
-              options.push(opt.value);
-            }
-          });
-        }
-
-        formData.fields.push({
-          name: document.getElementById("name-" + id).value,
-          type: document.getElementById("type-" + id).value,
-           mandatory: document.getElementById("mandatory-" + id)?.checked || false,
-          value: value,
-          options: options, // ✅ important
-          section: field.getAttribute("data-section")
         });
-      });
 
-      localStorage.setItem("schemeFormDraft", JSON.stringify(formData));
+        formData.stateDetails = stateDetails;
+        var allFields = document.querySelectorAll(".field-card");
 
-      console.log("Saved:", formData);
-      alert("Scheme draft saved successfully 📝");
-    }
-    function saveFinal() {
-      var formData = {
-        schemeName: document.getElementById("schemeName").value,
-        schemeDescription: document.getElementById("schemeDescription").value,
-        state: stateChoice.getValue(true),
-        budget: document.getElementById("budget").value,
-        ministry: document.getElementById("ministry").value,
-        sector: document.getElementById("sector").value,
-        subSector: document.getElementById("subSector").value,
-        fields: []
-      };
+        allFields.forEach(function (field) {
+          var id = field.id.split("-")[1];
+          var value = "";
 
-      var allFields = document.querySelectorAll(".field-card");
+          // 🔹 get value
+          var input = document.getElementById("val-" + id);
 
-      allFields.forEach(function (field) {
-        var id = field.id.split('-')[1];
-        var value = '';
-
-        // 🔹 get value
-        var input = document.getElementById("val-" + id);
-
-        if (input) {
-          if (input.type === "file") {
-            value = input.files && input.files.length > 0
-              ? input.files[0].name
-              : '';
-          } else {
-            value = input.value;
+          if (input) {
+            if (input.type === "file") {
+              value =
+                input.files && input.files.length > 0
+                  ? input.files[0].name
+                  : "";
+            } else {
+              value = input.value;
+            }
           }
-        }
 
-        // radio
-        var radio = document.querySelector("input[name='val-" + id + "']:checked");
-        if (radio) value = radio.value;
+          // radio
+          var radio = document.querySelector(
+            "input[name='val-" + id + "']:checked",
+          );
+          if (radio) value = radio.value;
 
-        // checkbox
-        var checkboxes = document.querySelectorAll("#input-" + id + " input[type=checkbox]:checked");
-        if (checkboxes.length > 0) {
-          value = [];
-          checkboxes.forEach(function (c) {
-            value.push(c.value);
+          // checkbox
+          var checkboxes = document.querySelectorAll(
+            "#input-" + id + " input[type=checkbox]:checked",
+          );
+          if (checkboxes.length > 0) {
+            value = [];
+            checkboxes.forEach(function (c) {
+              value.push(c.value);
+            });
+          }
+
+          // 🔹 collect options
+          var options = [];
+          var optionInputs = document.querySelectorAll(
+            "#option-list-" + id + " input",
+          );
+          if (optionInputs.length > 0) {
+            optionInputs.forEach(function (opt) {
+              if (opt.value) {
+                options.push(opt.value);
+              }
+            });
+          }
+
+          formData.fields.push({
+            name: document.getElementById("name-" + id).value,
+            type: document.getElementById("type-" + id).value,
+            mandatory:
+              document.getElementById("mandatory-" + id)?.checked || false,
+            value: value,
+            options: options, // ✅ important
+            section: field.getAttribute("data-section"),
           });
-        }
-
-        // 🔹 collect options
-        var options = [];
-        var optionInputs = document.querySelectorAll("#option-list-" + id + " input");
-        if (optionInputs.length > 0) {
-          optionInputs.forEach(function (opt) {
-            if (opt.value) {
-              options.push(opt.value);
-            }
-          });
-        }
-
-        formData.fields.push({
-          name: document.getElementById("name-" + id).value,
-          type: document.getElementById("type-" + id).value,
-         mandatory: document.getElementById("mandatory-" + id)?.checked || false,
-          value: value,
-          options: options, // ✅ important
-          section: field.getAttribute("data-section")
         });
-      });
 
-      localStorage.setItem("schemeFormDraft", JSON.stringify(formData));
+        localStorage.setItem("schemeFormDraft", JSON.stringify(formData));
 
-      console.log("Saved:", formData);
-      alert("Scheme submitted to selected states successfully ✅");
-      window.location.href = "https://www.figma.com/proto/eIUrGhDQoOaGgburEGwHlT/SMG?node-id=291-5533&t=aRX6xEC4PNxRmAis-0&scaling=scale-down-width&content-scaling=fixed&starting-point-node-id=61%3A2&page-id=0%3A1&hide-ui=1"; // 👈 change this to your page
-    }
-    function openPreview() {
-      updatePreview(); // generate latest preview
+        console.log("Saved:", formData);
+        alert("Scheme draft saved successfully 📝");
+      }
+      function saveFinal() {
+        const stateDetails = [];
 
-      const modal = new bootstrap.Modal(document.getElementById('previewModal'));
-      modal.show();
-    }
-    const stateChoice = new Choices('#state', {
-      removeItemButton: true,
-      searchEnabled: true,
-    });
+        document.querySelectorAll('[id^="state-row-"]').forEach(row => {
+          const id = row.id.split('-')[2];
 
-    // Select All
-    function selectAllStates() {
-      const allValues = Array.from(document.querySelectorAll('#state option'))
-        .map(opt => opt.value);
+        if (document.getElementById(`state-${id}`)?.value) {
+            stateDetails.push({
+              name: document.getElementById(`state-${id}`).value,
+              budget: document.getElementById(`budget-${id}`)?.value || '',
+              kpi: document.getElementById(`kpi-${id}`)?.value || ''
+            });
+          }
+        });
+        var formData = {
+          schemeName: document.getElementById("schemeName").value,
+          schemeDescription: document.getElementById("schemeDescription").value,
+          budget: document.getElementById("budget").value,
+          ministry: document.getElementById("ministry").value,
+          sector: document.getElementById("sector").value,
+          subSector: document.getElementById("subSector").value,
+          fields: [],
+        };
+        formData.stateDetails = stateDetails;
+        var allFields = document.querySelectorAll(".field-card");
 
-      stateChoice.setChoiceByValue(allValues);
-    }
+        allFields.forEach(function (field) {
+          var id = field.id.split("-")[1];
+          var value = "";
 
-    // Clear All
-    function clearAllStates() {
-      stateChoice.removeActiveItems();
-    }
+          // 🔹 get value
+          var input = document.getElementById("val-" + id);
 
-    function addFixedFields() {
+          if (input) {
+            if (input.type === "file") {
+              value =
+                input.files && input.files.length > 0
+                  ? input.files[0].name
+                  : "";
+            } else {
+              value = input.value;
+            }
+          }
 
-      /* ================= KPI ================= */
+          // radio
+          var radio = document.querySelector(
+            "input[name='val-" + id + "']:checked",
+          );
+          if (radio) value = radio.value;
 
-      const kpiSection = document.getElementById("KPIMetrics");
-      fieldCounter++;
-      const kpiQuarter = `
+          // checkbox
+          var checkboxes = document.querySelectorAll(
+            "#input-" + id + " input[type=checkbox]:checked",
+          );
+          if (checkboxes.length > 0) {
+            value = [];
+            checkboxes.forEach(function (c) {
+              value.push(c.value);
+            });
+          }
+
+          // 🔹 collect options
+          var options = [];
+          var optionInputs = document.querySelectorAll(
+            "#option-list-" + id + " input",
+          );
+          if (optionInputs.length > 0) {
+            optionInputs.forEach(function (opt) {
+              if (opt.value) {
+                options.push(opt.value);
+              }
+            });
+          }
+
+          formData.fields.push({
+            name: document.getElementById("name-" + id).value,
+            type: document.getElementById("type-" + id).value,
+            mandatory:
+              document.getElementById("mandatory-" + id)?.checked || false,
+            value: value,
+            options: options, // ✅ important
+            section: field.getAttribute("data-section"),
+          });
+        });
+
+        localStorage.setItem("schemeFormDraft", JSON.stringify(formData));
+
+        console.log("Saved:", formData);
+        alert("Scheme submitted to selected states successfully ✅");
+        window.location.href =
+          "https://www.figma.com/proto/eIUrGhDQoOaGgburEGwHlT/SMG?node-id=291-5533&t=aRX6xEC4PNxRmAis-0&scaling=scale-down-width&content-scaling=fixed&starting-point-node-id=61%3A2&page-id=0%3A1&hide-ui=1"; // 👈 change this to your page
+      }
+      function openPreview() {
+        updatePreview(); // generate latest preview
+
+        const modal = new bootstrap.Modal(
+          document.getElementById("previewModal"),
+        );
+        modal.show();
+      }
+     
+     
+    
+
+
+      function addFixedFields() {
+        /* ================= KPI ================= */
+
+        const kpiSection = document.getElementById("KPIMetrics");
+        fieldCounter++;
+        const kpiQuarter = `
 <div class="field-card" data-section="KPIMetrics" id="field-${fieldCounter}">
   <label>Quarter</label>
   <select id="val-${fieldCounter}" onchange="updatePreview()">
@@ -828,14 +905,14 @@
   <input type="hidden" id="name-${fieldCounter}" value="Quarter">
   <input type="hidden" id="type-${fieldCounter}" value="dropdown">
 </div>`;
-      // 👉 find Approval Status field
-      const approvalField = Array.from(kpiSection.children).find(el =>
-        el.innerText.includes("Approval Status")
-      );
+        // 👉 find Approval Status field
+        const approvalField = Array.from(kpiSection.children).find((el) =>
+          el.innerText.includes("Approval Status"),
+        );
 
-      // 👉 Total KPI
-      fieldCounter++;
-      const totalKPI = `
+        // 👉 Total KPI
+        fieldCounter++;
+        const totalKPI = `
           <div class="field-card" data-section="KPIMetrics" id="field-${fieldCounter}">
             <label>Total KPI</label>
             <input type="number" id="val-${fieldCounter}" value="100" readonly style="background:#e9ecef;">
@@ -843,9 +920,9 @@
             <input type="hidden" id="type-${fieldCounter}" value="number">
           </div>`;
 
-      // 👉 Served KPI
-      fieldCounter++;
-      const servedKPI = `
+        // 👉 Served KPI
+        fieldCounter++;
+        const servedKPI = `
 <div class="field-card" data-section="KPIMetrics" id="field-${fieldCounter}">
   <label>Served KPI</label>
   <input type="number" id="val-${fieldCounter}" oninput="updatePreview()">
@@ -853,18 +930,20 @@
   <input type="hidden" id="type-${fieldCounter}" value="number">
 </div>`;
 
-      if (approvalField) {
-        approvalField.insertAdjacentHTML("afterend", totalKPI + servedKPI);
-      } else {
-      kpiSection.insertAdjacentHTML("beforeend", kpiQuarter + totalKPI + servedKPI);
-      }
+        if (approvalField) {
+          approvalField.insertAdjacentHTML("afterend", totalKPI + servedKPI);
+        } else {
+          kpiSection.insertAdjacentHTML(
+            "beforeend",
+            kpiQuarter + totalKPI + servedKPI,
+          );
+        }
 
+        /* ================= FINANCIAL ================= */
 
-      /* ================= FINANCIAL ================= */
-
-      const finSection = document.getElementById("FinancialDetails");
-      fieldCounter++;
-      const finQuarter = `
+        const finSection = document.getElementById("FinancialDetails");
+        fieldCounter++;
+        const finQuarter = `
 <div class="field-card" data-section="FinancialDetails" id="field-${fieldCounter}">
   <label>Quarter</label>
   <select id="val-${fieldCounter}" onchange="updatePreview()">
@@ -878,13 +957,13 @@
   <input type="hidden" id="type-${fieldCounter}" value="dropdown">
 </div>`;
 
-      // 👉 find Attached Document
-      const attachField = Array.from(finSection.children).find(el =>
-        el.innerText.includes("Attached Document")
-      );
+        // 👉 find Attached Document
+        const attachField = Array.from(finSection.children).find((el) =>
+          el.innerText.includes("Attached Document"),
+        );
 
-      fieldCounter++;
-      const allocated = `
+        fieldCounter++;
+        const allocated = `
 <div class="field-card" data-section="FinancialDetails" id="field-${fieldCounter}">
   <label>Allocated Budget</label>
   <input type="number" id="val-${fieldCounter}" value="2500000" readonly style="background:#e9ecef;">
@@ -892,8 +971,8 @@
   <input type="hidden" id="type-${fieldCounter}" value="number">
 </div>`;
 
-      fieldCounter++;
-      const utilized = `
+        fieldCounter++;
+        const utilized = `
 <div class="field-card" data-section="FinancialDetails" id="field-${fieldCounter}">
   <label>Utilized Budget</label>
   <input type="number" id="val-${fieldCounter}" oninput="updatePreview()">
@@ -901,40 +980,112 @@
   <input type="hidden" id="type-${fieldCounter}" value="number">
 </div>`;
 
-      if (attachField) {
-        attachField.insertAdjacentHTML("beforebegin", allocated + utilized);
-      } else {
-      finSection.insertAdjacentHTML("beforeend", finQuarter + allocated + utilized);
+        if (attachField) {
+          attachField.insertAdjacentHTML("beforebegin", allocated + utilized);
+        } else {
+          finSection.insertAdjacentHTML(
+            "beforeend",
+            finQuarter + allocated + utilized,
+          );
+        }
       }
-    }
-    window.onload = function () {
-      addFixedFields();
-    };
-  </script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <!-- PREVIEW MODAL -->
-  <div class="modal fade" id="previewModal" tabindex="-1">
-    <div class="modal-dialog modal-xl modal-dialog-scrollable">
-      <div class="modal-content">
+      window.onload = function () {
+        addFixedFields();
+         addStateRow(true);
+      };
+  
 
-        <div class="modal-header">
-          <h5 class="modal-title">Preview</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        function getStateOptions(selected = "") {
+          const states = [
+            "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", "Goa",
+            "Gujarat", "Haryana", "Himachal Pradesh", "Jammu and Kashmir", "Jharkhand",
+            "Karnataka", "Kerala", "Madhya Pradesh", "Maharashtra", "Manipur", "Meghalaya",
+            "Mizoram", "Nagaland", "Odisha", "Punjab", "Rajasthan", "Sikkim", "Tamil Nadu",
+            "Telangana", "Tripura", "Uttarakhand", "Uttar Pradesh", "West Bengal",
+            "Andaman and Nicobar Islands", "Chandigarh",
+            "Dadra & Nagar Haveli and Daman & Diu", "Delhi", "Lakshadweep",
+            "Puducherry", "Ladakh"
+          ];
+
+          return states.map(s =>
+            `<option value="${s}" ${s === selected ? "selected" : ""}>${s}</option>`
+          ).join("");
+        }
+
+       function addStateRow(isFirst = false) {
+          stateRowCounter++;
+
+          const container = document.getElementById("stateDetailsContainer");
+
+          const row = document.createElement("div");
+          row.className = "field-card";
+          row.id = `state-row-${stateRowCounter}`;
+
+          row.innerHTML = `
+              ${!isFirst ? `<span class="remove-btn" onclick="removeStateRow(${stateRowCounter})">✖</span>` : ''}
+
+              <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                
+                <div style="flex:1;">
+                  <label>State</label>
+                  <select id="state-${stateRowCounter}" onchange="updatePreview()">
+                    <option value="">Select State</option>
+                    ${getStateOptions()}
+                  </select>
+                </div>
+
+                <div style="flex:1;">
+                  <label>State Budget</label>
+                  <input type="number" id="budget-${stateRowCounter}" oninput="updatePreview()">
+                </div>
+
+                <div style="flex:1;">
+                  <label>State KPI</label>
+                  <input type="number" id="kpi-${stateRowCounter}" oninput="updatePreview()">
+                </div>
+
+              </div>
+            `;
+
+          container.appendChild(row);
+        }
+
+        function removeStateRow(id) {
+          document.getElementById(`state-row-${id}`)?.remove();
+          updatePreview();
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- PREVIEW MODAL -->
+    <div class="modal fade" id="previewModal" tabindex="-1">
+      <div class="modal-dialog modal-xl modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Preview</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+
+          <div class="modal-body">
+            <div id="previewContainer"></div>
+          </div>
+
+          <div class="modal-footer">
+            <button class="btn btn-secondary btn-sm" data-bs-dismiss="modal">
+              Close
+            </button>
+            <button class="btn btn-draft btn-sm" onclick="saveDraft()">
+              Save Draft
+            </button>
+            <button class="btn btn-save btn-sm" onclick="saveFinal()">
+              Save
+            </button>
+          </div>
         </div>
-
-        <div class="modal-body">
-          <div id="previewContainer"></div>
-        </div>
-
-        <div class="modal-footer">
-          <button class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
-          <button class="btn btn-draft btn-sm" onclick="saveDraft()">Save Draft</button>
-          <button class="btn btn-save btn-sm" onclick="saveFinal()">Save</button>
-        </div>
-
       </div>
     </div>
-  </div>
-</body>
-
+  </body>
 </html>

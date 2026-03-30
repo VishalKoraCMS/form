@@ -1,464 +1,504 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>Scheme Review</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
 
     <style>
-        body {
-            background: #f3f4f6;
-            font-family: "Segoe UI", sans-serif;
-        }
+      body {
+        background: #f3f4f6;
+        font-family: "Segoe UI", sans-serif;
+      }
 
-        .panel {
-            background: #fff;
-            padding: 22px;
-            border-radius: 12px;
-            border: 1px solid #e5e7eb;
-            width: 70%;
-        }
+      .panel {
+        background: #fff;
+        padding: 22px;
+        border-radius: 12px;
+        border: 1px solid #e5e7eb;
+        width: 70%;
+      }
 
-        .preview-card {
-            border: 1px solid #d1d5db;
-            border-radius: 6px;
-            margin-bottom: 16px;
-            background: #fff;
-        }
+      .preview-card {
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        margin-bottom: 16px;
+        background: #fff;
+      }
 
-        .preview-header {
-            background: #f3f4f6;
-            padding: 10px 14px;
-            font-weight: 600;
-        }
+      .preview-header {
+        background: #f3f4f6;
+        padding: 10px 14px;
+        font-weight: 600;
+      }
 
-        .preview-row {
-            display: flex;
-            border-top: 1px solid #e5e7eb;
-        }
+      .preview-row {
+        display: flex;
+        border-top: 1px solid #e5e7eb;
+      }
 
-        .preview-label {
-            width: 40%;
-            padding: 10px;
-            background: #f9fafb;
-            font-weight: 500;
-        }
+      .preview-label {
+        width: 40%;
+        padding: 10px;
+        background: #f9fafb;
+        font-weight: 500;
+      }
 
-        .preview-value {
-            width: 60%;
-            padding: 10px;
-        }
+      .preview-value {
+        width: 60%;
+        padding: 10px;
+      }
 
-        .highlight-row {
-            background-color: #fff7ed;
-            border-left: 4px solid #f97316;
-        }
+      .highlight-row {
+        background-color: #fff7ed;
+        border-left: 4px solid #f97316;
+      }
     </style>
-</head>
+  </head>
 
-<body>
-
+  <body>
     <div class="container d-flex justify-content-center mt-4">
-        <div class="panel">
+      <div class="panel">
+        <!-- ✅ LIVE PREVIEW -->
+        <div id="livePreviewContainer"></div>
 
-            <!-- ✅ LIVE PREVIEW -->
-            <div id="livePreviewContainer"></div>
-
-            <!-- ✅ BUTTONS -->
-            <div class="d-flex justify-content-center gap-2 mt-3">
-        <button class="btn btn-dark btn-sm" onclick="goToList()">
+        <!-- ✅ BUTTONS -->
+        <div class="d-flex justify-content-center gap-2 mt-3">
+          <button class="btn btn-dark btn-sm" onclick="goToList()">
             Cancel
-        </button>
+          </button>
 
-                <button class="btn btn-success btn-sm" onclick="openPreview('Approved')">
-                    Approve
-                </button>
+          <button
+            class="btn btn-success btn-sm"
+            onclick="openPreview('Approved')"
+          >
+            Approve
+          </button>
 
-                <button class="btn btn-danger btn-sm" onclick="openPreview('Rejected')">
-                    Reject
-                </button>
-            </div>
-
+          <button
+            class="btn btn-danger btn-sm"
+            onclick="openPreview('Rejected')"
+          >
+            Reject
+          </button>
         </div>
+      </div>
     </div>
 
     <!-- ✅ MODAL -->
     <div class="modal fade" id="previewModal">
-        <div class="modal-dialog">
-            <div class="modal-content">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Comment</h5>
+            <button class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
 
-                <div class="modal-header">
-                    <h5 class="modal-title">Comment</h5>
-                    <button class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
+          <div class="modal-body">
+            <textarea
+              id="reviewComment"
+              rows="5"
+              style="width: 100%; padding: 10px"
+            ></textarea>
+          </div>
 
-                <div class="modal-body">
-                    <textarea id="reviewComment" rows="5" style="width:100%; padding:10px;"></textarea>
-                </div>
-
-                <div class="modal-footer">
-                    <button class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
-                    <button class="btn btn-primary btn-sm" onclick="submitReview()">Submit</button>
-                </div>
-
-            </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary btn-sm" data-bs-dismiss="modal">
+              Close
+            </button>
+            <button class="btn btn-primary btn-sm" onclick="submitReview()">
+              Submit
+            </button>
+          </div>
         </div>
+      </div>
     </div>
 
     <script>
-        // ✅ SAMPLE DATA
-        const formData = {
-                "schemeName": "Industrial Growth Incentive Scheme",
-                "schemeDescription": "Provides financial and infrastructure support for industrial expansion across multiple states.",
-                "state": [
-                    "Gujarat",
-                    "Maharashtra",
-                    "Karnataka"
-                ],
-                "budget": "10000000",
-                "ministry": "Ministry of Heavy Industries",
-                "sector": "921",
-                "subSector": "S3",
-                "isHighLight": true,
-    "fields": [
-                    {
-                        "name": "Beneficiary Name",
-                        "type": "text",
-                        "mandatory": false,
-                        "value": "ABC Industries Pvt Ltd",
-                        "options": [],
-                        "section": "basicSection",
-                        "isHighLight": false
-                    },
-                    {
-                        "name": "Number of Employees",
-                        "type": "number",
-                        "mandatory": false,
-                        "value": "150",
-                        "options": [],
-                        "section": "basicSection",
-                        "isHighLight": false
-                    },
-                    {
-                        "name": "Registration Date",
-                        "type": "date",
-                        "mandatory": false,
-                        "value": "2025-12-15",
-                        "options": [],
-                        "section": "basicSection",
-                        "isHighLight": false
-                    },
-                    {
-                        "name": "Business Type",
-                        "type": "dropdown",
-                        "mandatory": false,
-                        "value": "Manufacturing",
-                        "options": [
-                            "Manufacturing",
-                            "Service",
-                            "Trading"
-                        ],
-                        "section": "basicSection",
-                        "isHighLight": false
-                    },
-                    {
-                        "name": "Is MSME Registered",
-                        "type": "radio",
-                        "mandatory": false,
-                        "value": "Yes",
-                        "options": [
-                            "Yes",
-                            "No"
-                        ],
-                        "section": "basicSection",
-                        "isHighLight": false
-                    },
-                    {
-                        "name": "Applicable Benefits",
-                        "type": "checkbox",
-                        "mandatory": false,
-                        "value": [
-                            "Subsidy",
-                            "Loan Support"
-                        ],
-                        "options": [
-                            "Tax Exemption",
-                            "Subsidy",
-                            "Loan Support"
-                        ],
-                        "section": "basicSection",
-                        "isHighLight": false
-                    },
-                    {
-                        "name": "Attached Document",
-                        "type": "file",
-                        "mandatory": false,
-                        "value": "registration-certificate.pdf",
-                        "options": [],
-                        "section": "basicSection",
-                        "isHighLight": false
-                    },
-                    {
-                        "name": "Project Name",
-                        "type": "text",
-                        "mandatory": false,
-                        "value": "Solar Plant Expansion",
-                        "options": [],
-                        "section": "FinancialDetails",
-                        "isHighLight": false
-                    },
-                    {
-                        "name": "Total Investment",
-                        "type": "number",
-                        "mandatory": false,
-                        "value": "2500000",
-                        "options": [],
-                        "section": "FinancialDetails",
-                        "isHighLight": false
-                    },
-                    {
-                        "name": "Start Date",
-                        "type": "date",
-                        "mandatory": false,
-                        "value": "2026-04-01",
-                        "options": [],
-                        "section": "FinancialDetails",
-                        "isHighLight": false
-                    },
-                    {
-                        "name": "Attached Document",
-                        "type": "file",
-                        "mandatory": false,
-                        "value": "dummy-pdf_2.pdf",
-                        "options": [],
-                        "section": "FinancialDetails",
-                        "isHighLight": false
-                    },
-                    {
-                        "name": "Performance Rating",
-                        "type": "dropdown",
-                        "mandatory": false,
-                        "value": "Excellent",
-                        "options": [
-                            "Poor",
-                            "Average",
-                            "Good",
-                            "Very Good",
-                            "Excellent"
-                        ],
-                        "section": "KPIMetrics",
-                        "isHighLight": false
-                    },
-                    {
-                        "name": "Approval Status",
-                        "type": "radio",
-                        "mandatory": false,
-                        "value": "Approved",
-                        "options": [
-                            "Pending",
-                            "Approved",
-                            "Rejected"
-                        ],
-                        "section": "KPIMetrics",
-                        "isHighLight": false
-                    },
-                    {
-                        "name": "Facilities Provided",
-                        "type": "checkbox",
-                        "mandatory": false,
-                        "value": [
-                            "Funding",
-                            "Training"
-                        ],
-                        "options": [
-                            "Funding",
-                            "Training",
-                            "Infrastructure",
-                            "Mentorship"
-                        ],
-                        "section": "Others",
-                        "isHighLight": false
-                    },
-                    {
-                        "name": "Remarks",
-                        "type": "text",
-                        "mandatory": false,
-                        "value": "Project meets all eligibility criteria and shows strong growth potential.",
-                        "options": [],
-                        "section": "Others",
-                        "isHighLight": false
-                    }
-                ]
-            }
+      // ✅ SAMPLE DATA
+      const formData = {
+        schemeName: "Industrial Growth Incentive Scheme",
+        schemeDescription:
+          "Provides financial and infrastructure support for industrial expansion across multiple states.",
+        stateDetails: [
+          { name: "Gujarat", budget: "125", kpi: "3243" },
+          { name: "Maharashtra", budget: "200", kpi: "90" },
+          { name: "Karnataka", budget: "150", kpi: "120" },
+        ],
+        budget: "10000000",
+        ministry: "Ministry of Heavy Industries",
+        sector: "921",
+        subSector: "S3",
+        isHighLight: true,
+        fields: [
+          {
+            name: "Beneficiary Name",
+            type: "text",
+            mandatory: false,
+            value: "ABC Industries Pvt Ltd",
+            options: [],
+            section: "basicSection",
+            isHighLight: false,
+          },
+          {
+            name: "Number of Employees",
+            type: "number",
+            mandatory: false,
+            value: "150",
+            options: [],
+            section: "basicSection",
+            isHighLight: false,
+          },
+          {
+            name: "Registration Date",
+            type: "date",
+            mandatory: false,
+            value: "2025-12-15",
+            options: [],
+            section: "basicSection",
+            isHighLight: false,
+          },
+          {
+            name: "Business Type",
+            type: "dropdown",
+            mandatory: false,
+            value: "Manufacturing",
+            options: ["Manufacturing", "Service", "Trading"],
+            section: "basicSection",
+            isHighLight: false,
+          },
+          {
+            name: "Is MSME Registered",
+            type: "radio",
+            mandatory: false,
+            value: "Yes",
+            options: ["Yes", "No"],
+            section: "basicSection",
+            isHighLight: false,
+          },
+          {
+            name: "Applicable Benefits",
+            type: "checkbox",
+            mandatory: false,
+            value: ["Subsidy", "Loan Support"],
+            options: ["Tax Exemption", "Subsidy", "Loan Support"],
+            section: "basicSection",
+            isHighLight: false,
+          },
+          {
+            name: "Attached Document",
+            type: "file",
+            mandatory: false,
+            value: "registration-certificate.pdf",
+            options: [],
+            section: "basicSection",
+            isHighLight: false,
+          },
+          {
+            name: "Project Name",
+            type: "text",
+            mandatory: false,
+            value: "Solar Plant Expansion",
+            options: [],
+            section: "FinancialDetails",
+            isHighLight: false,
+          },
+          {
+            name: "Total Investment",
+            type: "number",
+            mandatory: false,
+            value: "2500000",
+            options: [],
+            section: "FinancialDetails",
+            isHighLight: false,
+          },
+          {
+            name: "Start Date",
+            type: "date",
+            mandatory: false,
+            value: "2026-04-01",
+            options: [],
+            section: "FinancialDetails",
+            isHighLight: false,
+          },
+          {
+            name: "Attached Document",
+            type: "file",
+            mandatory: false,
+            value: "dummy-pdf_2.pdf",
+            options: [],
+            section: "FinancialDetails",
+            isHighLight: false,
+          },
+          {
+            name: "Performance Rating",
+            type: "dropdown",
+            mandatory: false,
+            value: "Excellent",
+            options: ["Poor", "Average", "Good", "Very Good", "Excellent"],
+            section: "KPIMetrics",
+            isHighLight: false,
+          },
+          {
+            name: "Approval Status",
+            type: "radio",
+            mandatory: false,
+            value: "Approved",
+            options: ["Pending", "Approved", "Rejected"],
+            section: "KPIMetrics",
+            isHighLight: false,
+          },
+          {
+            name: "Facilities Provided",
+            type: "checkbox",
+            mandatory: false,
+            value: ["Funding", "Training"],
+            options: ["Funding", "Training", "Infrastructure", "Mentorship"],
+            section: "Others",
+            isHighLight: false,
+          },
+          {
+            name: "Remarks",
+            type: "text",
+            mandatory: false,
+            value:
+              "Project meets all eligibility criteria and shows strong growth potential.",
+            options: [],
+            section: "Others",
+            isHighLight: false,
+          },
+        ],
+      };
 
-        // ✅ FORMAT
-        function formatHeading(text) {
-            return text.replace(/([A-Z])/g, ' $1').replace(/^./, s => s.toUpperCase());
-        }
+      // ✅ FORMAT
+      function formatHeading(text) {
+        return text
+          .replace(/([A-Z])/g, " $1")
+          .replace(/^./, (s) => s.toUpperCase());
+      }
 
-        // ✅ PREVIEW RENDER
-        function updatePreview() {
+      // ✅ PREVIEW RENDER
+      function updatePreview() {
+        let grouped = {
+          basicSection: "",
+          FinancialDetails: "",
+          KPIMetrics: "",
+          Others: "",
+        };
 
-            let grouped = {
-                basicSection: '',
-                FinancialDetails: '',
-                KPIMetrics: '',
-                Others: ''
-            };
+        formData.fields.forEach((f) => {
+          let value = Array.isArray(f.value)
+            ? f.value.join(", ")
+            : f.value || "-";
 
-            formData.fields.forEach(f => {
+          if (f.type === "file") value = "📎 " + value;
 
-                let value = Array.isArray(f.value) ? f.value.join(', ') : f.value || '-';
-
-                if (f.type === "file") value = "📎 " + value;
-
-                grouped[f.section] += `
-        <div class="preview-row ${f.isHighLight ? 'highlight-row' : ''}">
+          grouped[f.section] += `
+        <div class="preview-row ${f.isHighLight ? "highlight-row" : ""}">
           <div class="preview-label">${f.name}</div>
           <div class="preview-value">${value}</div>
         </div>
       `;
-            });
+        });
+        let stateHTML = '';
 
-            let html = `
-      <div class="preview-card">
-        <div class="preview-header">Basic Details</div>
-        <div class="preview-row"><div class="preview-label">Scheme</div><div class="preview-value">${formData.schemeName}</div></div>
-        <div class="preview-row"><div class="preview-label">Description</div><div class="preview-value">${formData.schemeDescription}</div></div>
-        <div class="preview-row"><div class="preview-label">States</div><div class="preview-value">${formData.state.join(', ')}</div></div>
-        <div class="preview-row"><div class="preview-label">Budget</div><div class="preview-value">${formData.budget}</div></div>
+          if (formData.stateDetails && formData.stateDetails.length > 0) {
+
+              stateHTML = `
+    <div class="preview-row">
+      <div class="preview-label">States</div>
+      <div class="preview-value">
+
+        <table style="width:100%; border-collapse:collapse; font-size:13px;">
+          
+          <thead>
+            <tr style="background:#f3f4f6;">
+              <th style="text-align:left; padding:6px; border-bottom:1px solid #ddd;">State</th>
+              <th style="text-align:right; padding:6px; border-bottom:1px solid #ddd;">Budget</th>
+              <th style="text-align:right; padding:6px; border-bottom:1px solid #ddd;">KPI</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            ${formData.stateDetails.map(s => `
+              <tr>
+                <td style="padding:6px;">${s.name || '-'}</td>
+                <td style="padding:6px; text-align:right;">${s.budget || '-'}</td>
+                <td style="padding:6px; text-align:right;">${s.kpi || '-'}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+
+        </table>
+
       </div>
-    `;
+    </div>
+  `;
+          }
+        let html = `
+  <div class="preview-card">
+    <div class="preview-header">Basic Details</div>
 
-            for (let key in grouped) {
-                if (grouped[key]) {
-                    html += `
+    <div class="preview-row">
+      <div class="preview-label">Scheme</div>
+      <div class="preview-value">${formData.schemeName}</div>
+    </div>
+
+    <div class="preview-row">
+      <div class="preview-label">Description</div>
+      <div class="preview-value">${formData.schemeDescription}</div>
+    </div>
+
+    ${stateHTML}
+
+    <div class="preview-row">
+      <div class="preview-label">Budget</div>
+      <div class="preview-value">${formData.budget}</div>
+    </div>
+  </div>
+`;
+
+        for (let key in grouped) {
+          if (grouped[key]) {
+            html += `
           <div class="preview-card">
             <div class="preview-header">${formatHeading(key)}</div>
             ${grouped[key]}
           </div>
         `;
-                }
-            }
-
-            document.getElementById("livePreviewContainer").innerHTML = html;
+          }
         }
 
-        // ✅ MODAL CONTROL
-        let currentAction = '';
+        document.getElementById("livePreviewContainer").innerHTML = html;
+      }
 
-        function openPreview(action) {
-            currentAction = action;
+      // ✅ MODAL CONTROL
+      let currentAction = "";
 
-            document.querySelector(".modal-title").innerText =
-                action === 'Approved' ? 'Approve Scheme' : 'Reject Scheme';
+      function openPreview(action) {
+        currentAction = action;
 
-            new bootstrap.Modal(document.getElementById('previewModal')).show();
-        }
+        document.querySelector(".modal-title").innerText =
+          action === "Approved" ? "Approve Scheme" : "Reject Scheme";
 
-   function submitReview() {
+        new bootstrap.Modal(document.getElementById("previewModal")).show();
+      }
+
+      function submitReview() {
         const comment = document.getElementById("reviewComment").value;
-       if (!comment.trim()) {
-           alert("Comment required ❗");
-           return;
-       }
-        console.log({status: currentAction, });
+        if (!comment.trim()) {
+          alert("Comment required ❗");
+          return;
+        }
+        console.log({ status: currentAction });
         alert(currentAction + " successfully ✅");
         // ✅ Redirect based on action
-        if (currentAction === 'Approved') {
-            window.location.href = "https://www.figma.com/proto/eIUrGhDQoOaGgburEGwHlT/SMG?node-id=279-5285&t=aRX6xEC4PNxRmAis-0&scaling=scale-down-width&content-scaling=fixed&starting-point-node-id=61%3A2&page-id=0%3A1&hide-ui=1";   // 👉 change this
-        } else if (currentAction === 'Rejected') {
-        const modalEl = document.getElementById('previewModal');
-            const modal = bootstrap.Modal.getInstance(modalEl);
-            modal.hide();
+        if (currentAction === "Approved") {
+          window.location.href =
+            "https://www.figma.com/proto/eIUrGhDQoOaGgburEGwHlT/SMG?node-id=279-5285&t=aRX6xEC4PNxRmAis-0&scaling=scale-down-width&content-scaling=fixed&starting-point-node-id=61%3A2&page-id=0%3A1&hide-ui=1"; // 👉 change this
+        } else if (currentAction === "Rejected") {
+          const modalEl = document.getElementById("previewModal");
+          const modal = bootstrap.Modal.getInstance(modalEl);
+          modal.hide();
 
-            // optional: clear comment
-            document.getElementById("reviewComment").value = "";
+          // optional: clear comment
+          document.getElementById("reviewComment").value = "";
         }
-    }
+      }
 
-        // ✅ INIT
-       window.onload = function () {
-             ensureAllFields();  // ✅ add field
-            updatePreview();    // ✅ render UI
-        };
+      // ✅ INIT
+      window.onload = function () {
+        ensureAllFields(); // ✅ add field
+        updatePreview(); // ✅ render UI
+      };
 
-        function goToList() {
-                   window.location.href = "https://www.figma.com/proto/eIUrGhDQoOaGgburEGwHlT/SMG?node-id=269-5098&t=aRX6xEC4PNxRmAis-0&scaling=scale-down-width&content-scaling=fixed&starting-point-node-id=269%3A4832&page-id=0%3A1"; // 👈 change this to your page
-                // window.location.href = "https://www.figma.com/proto/eIUrGhDQoOaGgburEGwHlT/SMG?node-id=291-5533&t=aRX6xEC4PNxRmAis-0&scaling=scale-down-width&content-scaling=fixed&starting-point-node-id=61%3A2&page-id=0%3A1&hide-ui=1"; // 👈 change this to your page
-            }
-            function ensureAllFields() {
+      function goToList() {
+        window.location.href =
+          "https://www.figma.com/proto/eIUrGhDQoOaGgburEGwHlT/SMG?node-id=269-5098&t=aRX6xEC4PNxRmAis-0&scaling=scale-down-width&content-scaling=fixed&starting-point-node-id=269%3A4832&page-id=0%3A1"; // 👈 change this to your page
+        // window.location.href = "https://www.figma.com/proto/eIUrGhDQoOaGgburEGwHlT/SMG?node-id=291-5533&t=aRX6xEC4PNxRmAis-0&scaling=scale-down-width&content-scaling=fixed&starting-point-node-id=61%3A2&page-id=0%3A1&hide-ui=1"; // 👈 change this to your page
+      }
+      function ensureAllFields() {
+        /* ================= KPI ================= */
 
-                    /* ================= KPI ================= */
+        // 👉 remove old KPI fields if already present (important)
+        formData.fields = formData.fields.filter(
+          (f) =>
+            !(
+              f.section === "KPIMetrics" &&
+              (f.name === "Served KPI" || f.name === "Total KPI")
+            ),
+        );
 
-                    // 👉 remove old KPI fields if already present (important)
-                    formData.fields = formData.fields.filter(
-                        f => !(f.section === "KPIMetrics" &&
-                            (f.name === "Served KPI" || f.name === "Total KPI"))
-                    );
+        // 👉 find Approval Status index
+        const approvalIndex = formData.fields.findIndex(
+          (f) => f.section === "KPIMetrics" && f.name === "Approval Status",
+        );
 
-                    // 👉 find Approval Status index
-                    const approvalIndex = formData.fields.findIndex(
-                        f => f.section === "KPIMetrics" && f.name === "Approval Status"
-                    );
+        if (approvalIndex !== -1) {
+          formData.fields.splice(
+            approvalIndex + 1,
+            0,
+            {
+              name: "Total KPI",
+              type: "number",
+              value: "100",
+              section: "KPIMetrics",
+              isHighLight: false,
+            },
+            {
+              name: "Served KPI",
+              type: "number",
+              value: "50",
+              section: "KPIMetrics",
+              isHighLight: true,
+            },
+          );
+        }
 
-                    if (approvalIndex !== -1) {
-                        formData.fields.splice(approvalIndex + 1, 0,
-                            {
-                                name: "Total KPI",
-                                type: "number",
-                                value: "100",
-                                section: "KPIMetrics",
-                                isHighLight: false  
-                            },
-                            {
-                                name: "Served KPI",
-                                type: "number",
-                                value: "50",
-                                section: "KPIMetrics",
-                                isHighLight: true  
-                            }
-                        );
-                    }
+        /* ================= FINANCIAL ================= */
 
-                    /* ================= FINANCIAL ================= */
+        // 👉 remove old financial fields if exist
+        formData.fields = formData.fields.filter(
+          (f) =>
+            !(
+              f.section === "FinancialDetails" &&
+              (f.name === "Allocated Budget" || f.name === "Utilized Budget")
+            ),
+        );
 
-                    // 👉 remove old financial fields if exist
-                    formData.fields = formData.fields.filter(
-                        f => !(f.section === "FinancialDetails" &&
-                            (f.name === "Allocated Budget" || f.name === "Utilized Budget"))
-                    );
+        // 👉 find Attached Document index
+        const attachIndex = formData.fields.findIndex(
+          (f) =>
+            f.section === "FinancialDetails" && f.name === "Attached Document",
+        );
 
-                    // 👉 find Attached Document index
-                    const attachIndex = formData.fields.findIndex(
-                        f => f.section === "FinancialDetails" && f.name === "Attached Document"
-                    );
-
-                    if (attachIndex !== -1) {
-                        formData.fields.splice(attachIndex, 0,
-                            {
-                                name: "Allocated Budget",
-                                type: "number",
-                                value: "2500000",
-                                section: "FinancialDetails",
-                                isHighLight: false  
-                            },
-                            {
-                                name: "Utilized Budget",
-                                type: "number",
-                                value: "1000000",
-                                section: "FinancialDetails",
-                                isHighLight: true  
-                            }
-                        );
-                    }
-                }
+        if (attachIndex !== -1) {
+          formData.fields.splice(
+            attachIndex,
+            0,
+            {
+              name: "Allocated Budget",
+              type: "number",
+              value: "2500000",
+              section: "FinancialDetails",
+              isHighLight: false,
+            },
+            {
+              name: "Utilized Budget",
+              type: "number",
+              value: "1000000",
+              section: "FinancialDetails",
+              isHighLight: true,
+            },
+          );
+        }
+      }
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-</body>
-
+  </body>
 </html>

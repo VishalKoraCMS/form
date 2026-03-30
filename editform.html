@@ -20,7 +20,10 @@
             border: 1px solid #e5e7eb;
             width: 70%;
         }
-
+.preview-value label {
+  margin-bottom: 4px;
+  display: block;
+}
         .preview-card {
             border: 1px solid #d1d5db;
             border-radius: 6px;
@@ -68,7 +71,16 @@
     </div>
 
     <script>
-
+    const ALL_STATES = [
+        "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", "Goa",
+        "Gujarat", "Haryana", "Himachal Pradesh", "Jammu and Kashmir", "Jharkhand",
+        "Karnataka", "Kerala", "Madhya Pradesh", "Maharashtra", "Manipur", "Meghalaya",
+        "Mizoram", "Nagaland", "Odisha", "Punjab", "Rajasthan", "Sikkim", "Tamil Nadu",
+        "Telangana", "Tripura", "Uttarakhand", "Uttar Pradesh", "West Bengal",
+        "Andaman and Nicobar Islands", "Chandigarh",
+        "Dadra & Nagar Haveli and Daman & Diu", "Delhi", "Lakshadweep",
+        "Puducherry", "Ladakh"
+    ];
         /* =========================
            STORAGE CONFIG
         ========================= */
@@ -80,10 +92,22 @@
         const defaultData = {
             "schemeName": "Industrial Growth Incentive Scheme",
             "schemeDescription": "Provides financial and infrastructure support for industrial expansion across multiple states.",
-            "state": [
-                "Gujarat",
-                "Maharashtra",
-                "Karnataka"
+            "stateDetails": [
+                {
+                    "name": "Gujarat",
+                    "budget": "125",
+                    "kpi": "3243"
+                },
+                {
+                    "name": "Maharashtra",
+                    "budget": "200",
+                    "kpi": "90"
+                },
+                {
+                    "name": "Karnataka",
+                    "budget": "150",
+                    "kpi": "120"
+                }
             ],
             "budget": "10000000",
             "ministry": "Ministry of Heavy Industries",
@@ -345,15 +369,15 @@
         ========================= */
         function renderUI() {
 
-            let html = `
-    <div class="preview-card">
-        <div class="preview-header">Basic Details</div>
-        ${rowInput("Scheme", "schemeName")}
-        ${rowInput("Description", "schemeDescription")}
-        ${rowInput("States", "state", true)}
-        ${rowInput("Budget", "budget")}
-    </div>
-    `;
+   let html = `
+<div class="preview-card">
+  <div class="preview-header">Basic Details</div>
+  ${rowInput("Scheme", "schemeName")}
+  ${rowInput("Description", "schemeDescription")}
+  ${renderStateRows()}
+  ${rowInput("Budget", "budget")}
+</div>
+`;
 
             let grouped = {};
 
@@ -552,6 +576,92 @@
                 });
             }
         }
+        function renderStateRows() {
+                const states = tempFormData.stateDetails || [];
+
+                return `
+                        <div class="preview-row">
+                        <div class="preview-label">States</div>
+                        <div class="preview-value">
+
+                            ${states.map((s, i) => `
+                            <div style="border:1px solid #eee; padding:8px; margin-bottom:6px; border-radius:6px;">
+                                
+                               <div style="display:flex; gap:10px; flex-wrap:wrap;">
+
+  <div style="flex:1;">
+    <label style="font-size:12px;">State</label>
+    <select class="form-select form-select-sm"
+      onchange="updateState(${i}, 'name', this.value)">
+      <option value="">Select State</option>
+      ${getStateOptions(s.name)}
+    </select>
+  </div>
+
+  <div style="flex:1;">
+    <label style="font-size:12px;">Budget</label>
+    <input class="form-control form-control-sm"
+      type="number"
+      value="${s.budget || ''}"
+      onchange="updateState(${i}, 'budget', this.value)">
+  </div>
+
+  <div style="flex:1;">
+    <label style="font-size:12px;">KPI</label>
+    <input class="form-control form-control-sm"
+      type="number"
+      value="${s.kpi || ''}"
+      onchange="updateState(${i}, 'kpi', this.value)">
+  </div>
+
+  ${i !== 0 ? `
+    <div style="display:flex; align-items:end;">
+      <button class="btn btn-sm btn-danger"
+        onclick="removeState(${i})">✖</button>
+    </div>
+  ` : ''}
+
+</div>
+
+                            </div>
+                            `).join('')}
+
+                            <div style="text-align:right;">
+                            <button class="btn btn-primary btn-sm"
+                                onclick="addState()">➕ Add State</button>
+                            </div>
+
+                        </div>
+                        </div>
+                    `;
+            }
+            function updateState(index, key, value) {
+                    tempFormData.stateDetails[index][key] = value;
+                }
+
+                function addState() {
+                    if (!tempFormData.stateDetails) tempFormData.stateDetails = [];
+
+                    tempFormData.stateDetails.push({
+                        name: '',
+                        budget: '',
+                        kpi: ''
+                    });
+
+                    renderUI();
+                }
+
+                function removeState(index) {
+                    tempFormData.stateDetails.splice(index, 1);
+                    renderUI();
+                }
+              function getStateOptions(selected = "") {
+                    return ALL_STATES.map(state => `
+                        <option value="${state}" ${state === selected ? "selected" : ""}>
+                        ${state}
+                        </option>
+                    `).join("");
+                }
     </script>
 
 </body>
