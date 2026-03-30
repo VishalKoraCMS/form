@@ -193,6 +193,13 @@
                     "isHighLight": false
                 },
                 {
+                    "name": "Quarter",
+                    "type": "dropdown",
+                    "value": "Q1",
+                    "options": ["Q1", "Q2", "Q3", "Q4"],
+                    "section": "FinancialDetails"
+                },
+                {
                     "name": "Project Name",
                     "type": "text",
                     "mandatory": false,
@@ -227,6 +234,13 @@
                     "options": [],
                     "section": "FinancialDetails",
                     "isHighLight": false
+                },
+                 {
+                    "name": "Quarter",
+                    "type": "dropdown",
+                    "value": "Q2",
+                    "options": ["Q1", "Q2", "Q3", "Q4"],
+                    "section": "KPIMetrics"
                 },
                 {
                     "name": "Performance Rating",
@@ -518,26 +532,28 @@
         if (approvalIndex === -1) return;
 
         // 👉 Insert in correct order
-        tempFormData.fields.splice(approvalIndex + 1, 0,
-            {
-                name: "Total KPI",
-                type: "number",
-                mandatory: false,
-                value: "100",
-                section: "KPIMetrics",
-                readOnly: true
-            },
-            {
-                name: "Served KPI",
-                type: "number",
-                mandatory: false,
-                value: "50",
-                section: "KPIMetrics"
-            }
-        );
+     tempFormData.fields.splice(approvalIndex + 1, 0,
+
+          {
+              name: "Total KPI",
+              type: "number",
+              value: "100",
+              section: "KPIMetrics",
+              readOnly: true
+          },
+
+          {
+              name: "Served KPI",
+              type: "number",
+              value: "50",
+              section: "KPIMetrics"
+          }
+      );
     }
     function ensureFinancialFields() {
-
+        const hasQuarter = tempFormData.fields.some(
+            f => f.name === "Quarter" && f.section === "FinancialDetails"
+        );
             const hasAllocated = tempFormData.fields.some(
                 f => f.name === "Allocated Budget" && f.section === "FinancialDetails"
             );
@@ -554,27 +570,38 @@
             if (attachIndex === -1) return; // safety
 
             // 👉 insert Utilized first (so order stays correct after next insert)
-            if (!hasUtilized) {
-                tempFormData.fields.splice(attachIndex, 0, {
-                    name: "Utilized Budget",
-                    type: "number",
-                    mandatory: false,
-                    value: "0",
-                    section: "FinancialDetails"
-                });
-            }
+          if (!hasQuarter) {
+            tempFormData.fields.splice(attachIndex, 0, {
+                name: "Quarter",
+                type: "dropdown",
+                value: "Q1",
+                options: ["Q1", "Q2", "Q3", "Q4"],
+                section: "FinancialDetails"
+            });
+        }
 
-            // 👉 insert Allocated above Utilized
-            if (!hasAllocated) {
-                tempFormData.fields.splice(attachIndex, 0, {
-                    name: "Allocated Budget",
-                    type: "number",
-                    mandatory: false,
-                    value: "2500000",
-                    section: "FinancialDetails",
-                    readOnly: true   // ⭐ important
-                });
-            }
+        // 👉 insert Allocated above
+        if (!hasAllocated) {
+            tempFormData.fields.splice(attachIndex, 0, {
+                name: "Allocated Budget",
+                type: "number",
+                mandatory: false,
+                value: "2500000",
+                section: "FinancialDetails",
+                readOnly: true
+            });
+        }
+
+        // 👉 insert Utilized
+        if (!hasUtilized) {
+            tempFormData.fields.splice(attachIndex, 0, {
+                name: "Utilized Budget",
+                type: "number",
+                mandatory: false,
+                value: "0",
+                section: "FinancialDetails"
+            });
+        }
         }
         function renderStateRows() {
                 const states = tempFormData.stateDetails || [];
